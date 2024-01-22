@@ -1,8 +1,11 @@
-import email
-from email.policy import default
-from random import choices
-from unittest.util import _MAX_LENGTH
+# import email
+# from email.policy import default
+# from pyexpat import model
+# from random import choices
+# from unittest.util import _MAX_LENGTH
+import uuid
 from django.db import models
+from django.urls import reverse
 from django.contrib.auth.models import AbstractUser, AbstractBaseUser, BaseUserManager
 from datetime import date
 from phonenumber_field.modelfields import PhoneNumberField
@@ -50,11 +53,11 @@ class User(AbstractUser):
   email = models.CharField(max_length = 64)
   # user_name = models.CharField(max_length = 20, default = "NULL")
   psw = models.CharField(max_length= 64, default = "NULL")
-  USER_GROUP = (
+  USER_CATA = (
     ('Passenger','PASSENGER'),
     ('Driver', 'DRIVER'),
   )
-  user_group = models.CharField(max_length = 10, choices = USER_GROUP, default = "Passenger")
+  user_cata = models.CharField(max_length = 10, choices = USER_CATA, default = "Passenger")
   license_num = models.CharField(max_length = 64, null = True, blank = True, help_text = "License Number")
   plate_num = models.CharField(max_length = 20, null = True, blank = True, help_text = "Plate Number")
   max_passenger = models.IntegerField(null = True, blank = True, help_text = "Max Passenger")
@@ -75,5 +78,37 @@ class User(AbstractUser):
   REQUIRED_FIELDS = ["password", "email", "first_name", "last_name", "user_group"]
   class Meta(AbstractUser.Meta):
     pass
+  
+class Ride(models.Model):
+  id = models.UUIDField(primary_key = True, auto_created = True, default = uuid.uuid4, help_text = "uuid for request")
+  start = models.CharField(max_length = 100)
+  destination = models.CharField(max_length = 100)
+  order_time = models.DateTimeField(auto_now = True)
+  pick_up_time = models.DateTimeField(help_text="YYYY-MM-DD HH:MM",null=True, blank = True)
+  arrival_time = models.DateTimeField(help_text="YYYY-MM-DD HH:MM",null=True, blank = True)
+  # passenger_num = models.IntegerField(null=True)
+  owner_passenger_num = models.IntegerField(null=True, blank = True)
+  shared = models.BooleanField(default = False)
+  driver = models.ForeignKey(User, on_delete = models.SET_NULL, null = True, blank = True, related_name = 'driver')
+  owner = models.ForeignKey(User, on_delete = models.SET_NULL, related_name = 'owner')
+  extra_request = models.CharField(max_length = 100, null = True, blank = True)  
+  
+  
+  RIDE_STATUS = (('Open','OPEN'),
+                 ('Cancelled', 'CANCELLED'),
+                 ('Comfirmed','COMFIRMED'),
+                 ('In Progress', 'PROGRESS'),
+                 ('Completed','COMPLETED'))
+  ride_status = models.CharField(max_length = 15, choices = RIDE_STATUS, default = 'open')
+  
+  def __str__(self):
+    return str(self.id)
+  
+  def get_absolute_url(self):
+      return reverse("ride_detail", args = [str(self.id)])
+  
+class Group(models.Model):
+  group_id = models.UUIDField(primary_key=True, auto_created=True, default=uuid.uuid4)
+  sharer = models.ForeignKey(User, on_delete = models.SET_NULL, related_name = 'owner')
   
 # class Vehicle(models.Model):
