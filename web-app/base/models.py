@@ -105,10 +105,16 @@ class Ride(models.Model):
     return str(self.id)
   
   def get_absolute_url(self):
-      return reverse("ride_detail", args = [str(self.id)])
+    return reverse("ride_detail", args = [str(self.id)])
   
 class Group(models.Model):
   group_id = models.UUIDField(primary_key=True, auto_created=True, default=uuid.uuid4)
   sharer = models.ForeignKey(User, on_delete = models.SET_NULL, related_name = 'owner')
+  companions = models.ManyToManyField(User, related_name="participaed_group")
+  order = models.ForeignKey(User, on_delete = models.CASCADE)
+  def __str__(self):
+    return str(self.group_id)
+  def get_absolute_url(self):
+      return reverse("order_detail", args = [str(self.group_id)])
   
 # class Vehicle(models.Model):
