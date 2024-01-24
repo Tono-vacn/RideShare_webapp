@@ -13,7 +13,7 @@ from phonenumber_field.modelfields import PhoneNumberField
 # Create your models here.
 
 class LoginUserManager(BaseUserManager):
-  def create_new_user(self, email_input, psw, first_name = "NULL", last_name = "NULL", phone_num = "+19841234567", user_group = "PASSENGER", driver_license = "", plate_num = ""):
+  def create_new_user(self, email_input, psw, first_name = "NULL", last_name = "NULL", phone_num = "+19841234567", user_cata = "PASSENGER", driver_license = "", plate_num = ""):
     if not email_input:
       raise ValueError("invalid email input")
     new_user = self.model(
@@ -22,7 +22,7 @@ class LoginUserManager(BaseUserManager):
       phone_num = phone_num,
       email = LoginUserManager.normalize_email(email_input),
       psw = psw,
-      user_group = user_group,
+      user_cata = user_cata,
       license_num = driver_license,
       plate_num = plate_num,
     ) 
@@ -30,12 +30,12 @@ class LoginUserManager(BaseUserManager):
     new_user.save(using = self._db)
     return new_user
   
-  def create_super_user(self, email_input, psw, first_name = "NULL", last_name = "NULL", phone_num = "+19841234567", user_group = "PASSENGER", driver_license = "", plate_num = ""):
+  def create_superuser(self, email, password, first_name = "NULL", last_name = "NULL", phone_num = "+19841234567", user_cata = "PASSENGER", driver_license = "", plate_num = ""):
     sp_user = self.model(
-      email = LoginUserManager.normalize_email(email_input),
+      email = LoginUserManager.normalize_email(email),
       last_name = last_name,
       first_name = first_name,
-      user_group = user_group,
+      user_cata = user_cata,
       phone_num = phone_num,
     )
     
@@ -47,6 +47,7 @@ class LoginUserManager(BaseUserManager):
     return sp_user
 
 class User(AbstractUser):
+  # username = models.CharField(max_length = 64, default = "NULL", help_text = "User Name")
   first_name = models.CharField(max_length = 64, default = "NULL", help_text = "First Name")
   last_name = models.CharField(max_length = 64, default = "NULL", help_text = "Last Name")
   phone_num = PhoneNumberField(default = "+19841234567", primary_key = True)
@@ -75,7 +76,7 @@ class User(AbstractUser):
   objects = LoginUserManager()
   
   USERNAME_FIELD = "phone_num"
-  REQUIRED_FIELDS = ["password", "email", "first_name", "last_name", "user_group"]
+  REQUIRED_FIELDS = ["password", "email", "first_name", "last_name", "user_cata"]
   class Meta(AbstractUser.Meta):
     pass
   
@@ -90,9 +91,9 @@ class Ride(models.Model):
   # number of owner group
   owner_passenger_num = models.IntegerField(null=True, blank = True)
   shared = models.BooleanField(default = False)
-  #?related name
-  driver = models.ForeignKey(User, on_delete = models.SET_NULL, null = True, blank = True, related_name = 'driver')
-  owner = models.ForeignKey(User, on_delete = models.SET_NULL, related_name = 'owner')
+  driver = models.ForeignKey(User, on_delete = models.SET_NULL, null = True, blank = True, related_name = 'ride_driver')
+  owner = models.ForeignKey(User, on_delete = models.SET_NULL, null = True, related_name = 'ride_owner')
+
   extra_request = models.CharField(max_length = 100, null = True, blank = True)  
   
   
@@ -107,10 +108,16 @@ class Ride(models.Model):
     return str(self.id)
   
   def get_absolute_url(self):
-      return reverse("ride_detail", args = [str(self.id)])
+    return reverse("ride_detail", args = [str(self.id)])
   
 class Group(models.Model):
   group_id = models.UUIDField(primary_key=True, auto_created=True, default=uuid.uuid4)
-  sharer = models.ForeignKey(User, on_delete = models.SET_NULL, related_name = 'owner')
+  sharer = models.ForeignKey(User, on_delete = models.SET_NULL, null = True, related_name = 'group_owner')
+  companions = models.ManyToManyField(User, related_name="participated_group")
+  order = models.ForeignKey(User, on_delete = models.CASCADE, related_name = 'group_order')
+  def __str__(self):
+    return str(self.group_id)
+  def get_absolute_url(self):
+      return reverse("order_detail", args = [str(self.group_id)])
   
 # class Vehicle(models.Model):
