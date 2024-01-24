@@ -132,7 +132,7 @@ STATIC_URL = 'static/'
 #     BASE_DIR / "static",
 # ]
 
-AUTH_USER_MODEL = 'base.CustomUser'
+AUTH_USER_MODEL = 'base.User'
 
 
 # Default primary key field type
