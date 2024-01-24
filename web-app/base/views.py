@@ -9,8 +9,12 @@ from django.urls import reverse
 from django.views import generic
 # Create your views here.
 
-# def index(request):
-#   return HttpRequest("test")
+
+def index(request):
+  return HttpResponse("test")
+
+def init_page(request):
+  return render(request, "base/init_page.html")
 
 # def IndexView(generic.ListView):
 #   template_name = "base/index.html"

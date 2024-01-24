@@ -46,7 +46,7 @@ class LoginUserManager(BaseUserManager):
     sp_user.save(using = self._db)
     return sp_user
 
-class User(AbstractUser):
+class CustomUser(AbstractUser):
   first_name = models.CharField(max_length = 64, default = "NULL", help_text = "First Name")
   last_name = models.CharField(max_length = 64, default = "NULL", help_text = "Last Name")
   phone_num = PhoneNumberField(default = "+19841234567", primary_key = True)
@@ -89,8 +89,8 @@ class Ride(models.Model):
   # passenger_num = models.IntegerField(null=True)
   owner_passenger_num = models.IntegerField(null=True, blank = True)
   shared = models.BooleanField(default = False)
-  driver = models.ForeignKey(User, on_delete = models.SET_NULL, null = True, blank = True, related_name = 'driver')
-  owner = models.ForeignKey(User, on_delete = models.SET_NULL, related_name = 'owner')
+  driver = models.ForeignKey(CustomUser, on_delete = models.SET_NULL, null = True, blank = True, related_name = 'ride_driver')
+  owner = models.ForeignKey(CustomUser, on_delete = models.SET_NULL, null = True, related_name = 'ride_owner')
   extra_request = models.CharField(max_length = 100, null = True, blank = True)  
   
   
@@ -107,11 +107,11 @@ class Ride(models.Model):
   def get_absolute_url(self):
     return reverse("ride_detail", args = [str(self.id)])
   
-class Group(models.Model):
+class RideGroup(models.Model):
   group_id = models.UUIDField(primary_key=True, auto_created=True, default=uuid.uuid4)
-  sharer = models.ForeignKey(User, on_delete = models.SET_NULL, related_name = 'owner')
-  companions = models.ManyToManyField(User, related_name="participaed_group")
-  order = models.ForeignKey(User, on_delete = models.CASCADE)
+  sharer = models.ForeignKey(CustomUser, on_delete = models.SET_NULL, null = True, related_name = 'group_owner')
+  companions = models.ManyToManyField(CustomUser, related_name="participated_group")
+  order = models.ForeignKey(CustomUser, on_delete = models.CASCADE, related_name = 'group_order')
   def __str__(self):
     return str(self.group_id)
   def get_absolute_url(self):
