@@ -13,12 +13,28 @@ from phonenumber_field.modelfields import PhoneNumberField
 # Create your models here.
 
 class LoginUserManager(BaseUserManager):
-  def create_new_user(self, email_input, psw, first_name = "NULL", last_name = "NULL", phone_num = "+19841234567", user_cata = "PASSENGER", driver_license = "", plate_num = ""):
+  # def create_new_user(self, email_input, psw, first_name = "NULL", last_name = "NULL", phone_num = "+19841234567", user_cata = "PASSENGER", driver_license = "", plate_num = ""):
+  #   if not email_input:
+  #     raise ValueError("invalid email input")
+  #   new_user = self.model(
+  #     first_name = first_name,
+  #     last_name = last_name,
+  #     phone_num = phone_num,
+  #     email = LoginUserManager.normalize_email(email_input),
+  #     psw = psw,
+  #     user_cata = user_cata,
+  #     license_num = driver_license,
+  #     plate_num = plate_num,
+  #   ) 
+  #   new_user.set_password(psw)
+  #   new_user.save(using = self._db)
+  #   return new_user
+
+  def create_new_user(self, email_input, psw, username = "NULL", phone_num = "+19841234567", user_cata = "PASSENGER", driver_license = "", plate_num = ""):
     if not email_input:
       raise ValueError("invalid email input")
     new_user = self.model(
-      first_name = first_name,
-      last_name = last_name,
+      username = username,
       phone_num = phone_num,
       email = LoginUserManager.normalize_email(email_input),
       psw = psw,
@@ -30,27 +46,26 @@ class LoginUserManager(BaseUserManager):
     new_user.save(using = self._db)
     return new_user
   
-  def create_superuser(self, email, password, first_name = "NULL", last_name = "NULL", phone_num = "+19841234567", user_cata = "PASSENGER", driver_license = "", plate_num = ""):
-    sp_user = self.model(
-      email = LoginUserManager.normalize_email(email),
-      last_name = last_name,
-      first_name = first_name,
-      user_cata = user_cata,
-      phone_num = phone_num,
-    )
+  # def create_superuser(self, email, password, first_name = "NULL", last_name = "NULL", phone_num = "+19841234567", user_cata = "PASSENGER", driver_license = "", plate_num = ""):
+  #   sp_user = self.model(
+  #     email = LoginUserManager.normalize_email(email),
+  #     last_name = last_name,
+  #     first_name = first_name,
+  #     user_cata = user_cata,
+  #     phone_num = phone_num,
+  #   )
     
-    sp_user.is_admin = True
-    sp_user.is_staff = True
-    sp_user.is_superuser = True
-    sp_user.is_active = True
-    sp_user.save(using = self._db)
-    return sp_user
+  #   sp_user.is_admin = True
+  #   sp_user.is_staff = True
+  #   sp_user.is_superuser = True
+  #   sp_user.is_active = True
+  #   sp_user.save(using = self._db)
+  #   return sp_user
 
 class CustomUser(AbstractUser):
   # username = models.CharField(max_length = 64, default = "NULL", help_text = "User Name")
-  first_name = models.CharField(max_length = 64, default = "NULL", help_text = "First Name")
-  last_name = models.CharField(max_length = 64, default = "NULL", help_text = "Last Name")
-  phone_num = PhoneNumberField(default = "+19841234567", primary_key = True)
+  username = models.CharField(max_length = 64, default = "NULL", help_text = "User Name", primary_key = True)
+  phone_num = PhoneNumberField(default = "+19841234567")
   email = models.CharField(max_length = 64)
   # user_name = models.CharField(max_length = 20, default = "NULL")
   psw = models.CharField(max_length= 64, default = "NULL")
@@ -73,10 +88,10 @@ class CustomUser(AbstractUser):
   vehicle_type = models.CharField(max_length = 20, null=True, blank=True, choices = VEHICLE_TYPE, default = "Economy")
   vehicle_brand = models.CharField(max_length = 20, null=True, blank=True)
   
-  objects = LoginUserManager()
+  # objects = LoginUserManager()
   
-  USERNAME_FIELD = "phone_num"
-  REQUIRED_FIELDS = ["password", "email", "first_name", "last_name", "user_cata"]
+  # USERNAME_FIELD = "phone_num"
+  # REQUIRED_FIELDS = ["password", "email", "first_name", "last_name", "user_cata"]
   class Meta(AbstractUser.Meta):
     pass
   
