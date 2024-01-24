@@ -87,8 +87,10 @@ class Ride(models.Model):
   pick_up_time = models.DateTimeField(help_text="YYYY-MM-DD HH:MM",null=True, blank = True)
   arrival_time = models.DateTimeField(help_text="YYYY-MM-DD HH:MM",null=True, blank = True)
   # passenger_num = models.IntegerField(null=True)
+  # number of owner group
   owner_passenger_num = models.IntegerField(null=True, blank = True)
   shared = models.BooleanField(default = False)
+  #?related name
   driver = models.ForeignKey(User, on_delete = models.SET_NULL, null = True, blank = True, related_name = 'driver')
   owner = models.ForeignKey(User, on_delete = models.SET_NULL, related_name = 'owner')
   extra_request = models.CharField(max_length = 100, null = True, blank = True)  
