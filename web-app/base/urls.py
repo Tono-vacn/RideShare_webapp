@@ -8,4 +8,6 @@ urlpatterns = [
     # path("", views.index, name="index"),
     path("", views.init_page, name="init_page"),
     path("login/", views.login, name="login"),
+    path("register/", views.register, name="register"),
+    path("logout/", views.logout, name="logout"),
 ]

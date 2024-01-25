@@ -1,0 +1,48 @@
+.box {
+  background-color: rgba(255, 255, 255, 0.8);
+  padding: 20px;
+  border-radius: 20px;
+  box-shadow: 0px 0px 8px gray;
+  width: auto;
+  margin-top: 2%;
+}
+.form-control {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+.btn-custom {
+  width: 200px;
+  height: auto;
+  margin-top: 20px;
+  background-color: white;
+  color: rgb(41, 89, 161);
+  border: 2px solid white;
+}
+.background {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-image: url('../../static/image/main_background.jpg');
+  background-size: cover;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  /* text-align: center; */
+}
+.overlay {
+  background-color: rgba(0, 0, 0, 0.5); /* Black with a bit of transparency */
+  color: white;
+  padding: 20px;
+  border-radius: 10px;
+}
+.title {
+  font-size: 3em;
+  margin-bottom: 20px;
+}
+.btn-custom:hover {
+  background-color: #2c83a0;
+}
+.form-group {
+  margin-bottom: 15px;
+}
