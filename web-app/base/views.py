@@ -27,7 +27,7 @@ def login(request):
       user = auth.authenticate(username = username, password = password) 
       if user is not None and user.is_active:
         auth.login(request, user)
-        return redirect("index", id = request.user.id)
+        return redirect("index", id = request.user.username)
       else:
         messages.info(request, "username or password not correct")
         # return HttpResponseRedirect(reverse("base:login"))
@@ -35,17 +35,20 @@ def login(request):
 
 def logout(request):
   auth.logout(request)
-  return redirect("login")
+  return redirect("base:login")
   # return HttpResponseRedirect(reverse("base:login"))   
   
 def register(request):
     if request.method == 'POST':
         form = CreateCustomUserForm(request.POST)
         if form.is_valid():
-            user = form.save()
-            my_user = CustomUser.objects.create(user = user)
-            my_user.save()
-            return redirect('login')
+            # user = form.save()
+            # my_user = CustomUser.objects.create(user)
+            # my_user.save()
+            form.save()
+            return redirect('base:login')
+        else:
+            messages.info(request, "invalid form")
     else:
         form = CreateCustomUserForm()
 

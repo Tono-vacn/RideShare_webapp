@@ -88,10 +88,6 @@ class CustomUser(AbstractUser):
   vehicle_type = models.CharField(max_length = 20, null=True, blank=True, choices = VEHICLE_TYPE, default = "Economy")
   vehicle_brand = models.CharField(max_length = 20, null=True, blank=True)
   
-  # objects = LoginUserManager()
-  
-  # USERNAME_FIELD = "phone_num"
-  # REQUIRED_FIELDS = ["password", "email", "first_name", "last_name", "user_cata"]
   class Meta(AbstractUser.Meta):
     pass
   

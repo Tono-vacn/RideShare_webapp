@@ -72,10 +72,11 @@
 
     {% if user.is_authenticated %}
         <a class="btn btn-outline-light" style=" width: 200px; height: auto; margin-left: 44%; margin-top: 30px;"
-           href=" {% url 'index' %}" role="button">Start a ride!</a >
+           {% comment %} href=" {% url 'index' %}"  {% endcomment %}
+           role="button">Start a ride!</a >
     {% else %}
         <a class="btn btn-outline-light" style=" width: 200px; height: auto; margin-left: 44%; margin-top: 30px;"
-           {% comment %} href="{% url 'login' %}"  {% endcomment %}
+           href="{% url 'login' %}" 
            role="button">Start a ride!</a >
     {% endif %}
 </div>
