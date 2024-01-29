@@ -13,7 +13,7 @@ from django.core.mail import send_mail
 # Create your views here.
 
 from .models import *
-from .forms import CreateCustomUserForm, PasswordChangeForm, EditDriverForm, EditPassengerForm, CreatDriverForm
+from .forms import CreateDriverForm,CreatePassengerForm, PasswordChangeForm, EditDriverForm, EditPassengerForm, CreatDriverForm_ADD
 
 
 def init_page(request):
@@ -41,19 +41,20 @@ def logout(request):
   return redirect("base:login")
   # return HttpResponseRedirect(reverse("base:login"))   
   
-def register(request):
+def register(request, flag):
     if request.method == 'POST':
-        form = CreateCustomUserForm(request.POST)
+        form = CreatePassengerForm(request.POST) if flag == "Passenger" else CreateDriverForm(request.POST)
         if form.is_valid():
-            # user = form.save()
-            # my_user = CustomUser.objects.create(user)
+            user = form.save(commit=False)
+            
             # my_user.save()
-            form.save()
+            user.user_cata = "Passenger" if flag == "Passenger" else "Driver"
+            user.save()
             return redirect('base:login')
         else:
             messages.info(request, "invalid form")
     else:
-        form = CreateCustomUserForm()
+        form = CreatePassengerForm() if flag == "Passenger" else CreateDriverForm()
 
     return render(request,'base/register.html',{'form':form})
    
@@ -85,12 +86,20 @@ def edit_profile(request, id):
     
     
 def register_as_driver(request,id):
-  cur_user = get_object_or_404(CustomUser, id = id)
+  # cur_user = get_object_or_404(CustomUser, id = id)
+  cur_user = request.user
   if request.method == "POST":
     # cur_user.user_cata = "Driver"
-    form = CreatDriverForm(request.POST, instance = cur_user)
+    form = CreatDriverForm_ADD(request.POST, instance = cur_user)
     if form.is_valid():
+      cur_user.user_cata = "Driver"
       form.save()
+      return redirect("base:index", id = id)
+    else:
+      messages.info(request, "invalid form")
+  else:
+    form = CreatDriverForm_ADD(instance = cur_user)
+  return render(request, "base/register_as_driver.html", {'form':form, 'user':cur_user})
       
       
   # return HttpResponse("test")

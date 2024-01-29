@@ -32,7 +32,7 @@
 
         <button type="button">
             <a 
-            {% comment %} href="{% url  'registerdriver' myuser.user.id %}" {% endcomment %}
+            href="{% url  'base:register_as_driver' cur_user.id %}"
             >Register as driver</a>
         </button>
 

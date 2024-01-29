@@ -5,10 +5,15 @@ from django.forms import ChoiceField
 from django.contrib.auth.forms import UserCreationForm,PasswordChangeForm, UserChangeForm
 from .models import *
 
-class CreateCustomUserForm(UserCreationForm):
+class CreateDriverForm(UserCreationForm):
   class Meta:
     model = CustomUser
-    fields = ['username','email','phone_num','user_cata','license_num','plate_num']
+    fields = ['username','email','phone_num','license_num','plate_num','max_passenger','vehicle_type','vehicle_brand']
+    
+class CreatePassengerForm(UserCreationForm):
+  class Meta:
+    model = CustomUser
+    fields = ['username','email','phone_num']
     
 class EditPassengerForm(UserChangeForm):
   class Meta:
@@ -21,7 +26,7 @@ class EditDriverForm(UserChangeForm):
     fields = ['username','email','phone_num','license_num','plate_num','max_passenger','vehicle_type','vehicle_brand']
 # class PasswordChangeForm(PasswordChangeForm):
 
-class CreatDriverForm(UserChangeForm):
+class CreatDriverForm_ADD(UserChangeForm):
     class Meta:
         model = CustomUser
         fields = ['license_num','plate_num','max_passenger','vehicle_type','vehicle_brand']

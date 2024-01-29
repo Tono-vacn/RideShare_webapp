@@ -30,8 +30,11 @@
             </form>
             <h2 class="mt-4">New user registration:</h2>
             <a 
-             href="{% url 'base:register' %}"
-            class="btn btn-link">Register!</a>
+             href="{% url 'base:register' flag="Passenger"%}"
+            class="btn btn-link">Register as Passenger!</a>
+            <a 
+             href="{% url 'base:register' flag="Driver"%}"
+            class="btn btn-link">Register as Driver!</a>
         </div>
         </div>
     </body>
