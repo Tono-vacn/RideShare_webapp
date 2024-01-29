@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Riding share service</title>
+    </head>
+    <body>
+        <h2>Welcome to service,{{cur_user.username}}</h2>
+
+        <button type="button">
+            <a 
+            {% comment %} href="{% url 'edituserinfo' driver.user.id %}" {% endcomment %}
+            >Edit your User Information</a>
+        </button>
+
+        <button type="button">
+            <a h
+            {% comment %} ref="{% url 'joinride' driver.user.id %}" {% endcomment %}
+            >Join an Existing Ride !</a>
+        </button>
+
+        <ul>
+            {% comment %} <li>First Name:{{driver.user.first_name}} </li>
+            <li>Last Name: {{driver.user.last_name}} </li> {% endcomment %}
+            <li>email: {{cur_user.email}}</li>
+            <li>username: {{cur_user.username}}</li>
+            <li>phone_number: {{cur_user.phone_num}}</li>
+            {% comment %} <li>User ID: {{driver.user.id}}</li> {% endcomment %}
+
+        </ul>
+        
+        <h3>Driver Information: You are a driver</h3>
+
+        <button type="button">
+            <a 
+            href="{% url 'base:edit_profile' cur_user.id%}"
+            >Edit your Driver Information</a>
+        </button>
+
+	<button type="button">
+            <a 
+            {% comment %} href="{% url 'driversearch' driver.user.id %}" {% endcomment %}
+            >Take An Order as Driver !</a>
+	</button>
+		
+        <ul>
+            <li>vehicle type: {{cur_user.vehicle_type}}</li>
+            <li>license_plate_number: {{cur_user.license_num}}</li>
+            <li>max_number_passengers: {{cur_user.max_passenger}}</li>
+            {% comment %} <li>special_request: {{cur_user.special_request}}</li> {% endcomment %}
+        </ul>
+       
+        <button type="button">
+            <a href="{% url 'base:logout' %}">Click here to logout!</a>
+        </button>
+
+	<button type="button">
+            <a 
+            {% comment %} href="{% url 'request' driver.user.id %}" {% endcomment %}
+            >Click here to Request Open Ride!</a>
+        </button>
+
+	
+	<button type="button">
+            <a 
+            {% comment %} href="{% url 'view_owned_ride' driver.user.id %}" {% endcomment %}
+            >View My Owned Ride</a>
+        </button>
+
+	
+	<button type="button">
+            <a 
+            {% comment %} href="{% url 'view_shared_ride' driver.user.id %}" {% endcomment %}
+            >View My Joined Ride</a>
+        </button>
+
+	
+	<button type="button">
+            <a 
+            {% comment %} href="{% url 'view_drive_ride' driver.user.id %}" {% endcomment %}
+            >View My Drive Ride</a>
+        </button>
+	
+    </body>
+</html>

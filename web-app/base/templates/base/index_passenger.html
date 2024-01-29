@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Riding share service</title>
+    </head>
+    <body>
+        <h2>Welcome to service,{{cur_user.username}}</h2>
+	
+        <button type="button">
+            <a 
+            href="{% url 'base:edit_profile' cur_user.id%}"
+            >Edit your User Information</a>
+        </button>
+        	
+        <button type="button">
+            <a 
+            {% comment %} href="{% url 'joinride' cur_user.username%}" {% endcomment %}
+            >Join an Existing Ride !</a>
+        </button>
+
+	<ul>
+            {% comment %} <li>First Name:{{myuser.user.first_name}} </li>
+            <li>Last Name: {{myuser.user.last_name}} </li> {% endcomment %}
+            <li>email: {{cur_user.email}} </li>
+            <li>username: {{cur_user.username}} </li>
+            <li>phone: {{cur_user.phone_num}} </li>
+            {% comment %} <li>User ID: {{myuser.user.id}}</li> {% endcomment %}
+
+       
+        <h3>Driver Information: You are not a driver</h3>
+
+        <button type="button">
+            <a 
+            {% comment %} href="{% url  'registerdriver' myuser.user.id %}" {% endcomment %}
+            >Register as driver</a>
+        </button>
+
+        <button type="button">
+            <a href="{% url 'base:logout' %}">Click here to logout!</a>
+        </button>
+
+	<button type="button">
+            <a 
+            {% comment %} href="{% url 'request' myuser.user.id%}" {% endcomment %}
+            >Click here to Request Open Ride!</a>
+        </button>
+
+
+	<button type="button">
+            <a 
+            {% comment %} href="{% url 'view_owned_ride' myuser.user.id%}" {% endcomment %}
+            >View My Owned Ride</a>
+        </button>
+
+	
+	<button type="button">
+            <a 
+            {% comment %} href="{% url 'view_shared_ride' myuser.user.id%}" {% endcomment %}
+            >View My Joined Ride</a>
+        </button>
+
+    </body>
+</html>

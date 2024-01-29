@@ -30,7 +30,7 @@ class LoginUserManager(BaseUserManager):
   #   new_user.save(using = self._db)
   #   return new_user
 
-  def create_new_user(self, email_input, psw, username = "NULL", phone_num = "+19841234567", user_cata = "PASSENGER", driver_license = "", plate_num = ""):
+  def create_new_user(self, email_input, psw, username = "NULL", phone_num = "+19841234567", user_cata = "PASSENGER", driver_license = "", plate_num = "", max_passenger = 0, vehicle_type = "Economy", vehicle_brand = "NULL"):
     if not email_input:
       raise ValueError("invalid email input")
     new_user = self.model(
@@ -41,6 +41,9 @@ class LoginUserManager(BaseUserManager):
       user_cata = user_cata,
       license_num = driver_license,
       plate_num = plate_num,
+      max_passenger = max_passenger,
+      vehicle_type = vehicle_type,
+      vehicle_brand = vehicle_brand,
     ) 
     new_user.set_password(psw)
     new_user.save(using = self._db)
@@ -64,14 +67,14 @@ class LoginUserManager(BaseUserManager):
 
 class CustomUser(AbstractUser):
   # username = models.CharField(max_length = 64, default = "NULL", help_text = "User Name")
-  username = models.CharField(max_length = 64, default = "NULL", help_text = "User Name", primary_key = True)
+  username = models.CharField(max_length = 64, default = "NULL", help_text = "User Name", unique=True)
   phone_num = PhoneNumberField(default = "+19841234567")
   email = models.CharField(max_length = 64)
   # user_name = models.CharField(max_length = 20, default = "NULL")
-  psw = models.CharField(max_length= 64, default = "NULL")
+  # psw = models.CharField(max_length= 64, default = "NULL")
   USER_CATA = (
-    ('Passenger','PASSENGER'),
-    ('Driver', 'DRIVER'),
+    ('Passenger','Passenger'),
+    ('Driver', 'Driver'),
   )
   user_cata = models.CharField(max_length = 10, choices = USER_CATA, default = "Passenger")
   license_num = models.CharField(max_length = 64, null = True, blank = True, help_text = "License Number")
@@ -79,10 +82,10 @@ class CustomUser(AbstractUser):
   max_passenger = models.IntegerField(null = True, blank = True, help_text = "Max Passenger")
   
   VEHICLE_TYPE = (
-      ('Economy', '0'),
-      ('Comfort', '1'),
-      ('Large', '2'),
-      ('XL', '3')
+      ('Economy', 'Economy'),
+      ('Comfort', 'Comfort'),
+      ('Large', 'Large'),
+      ('XL', 'XL')
   )
   
   vehicle_type = models.CharField(max_length = 20, null=True, blank=True, choices = VEHICLE_TYPE, default = "Economy")
