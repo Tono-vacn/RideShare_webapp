@@ -108,7 +108,7 @@ class Ride(models.Model):
   driver = models.ForeignKey(CustomUser, on_delete = models.SET_NULL, null = True, blank = True, related_name = 'ride_driver')
   owner = models.ForeignKey(CustomUser, on_delete = models.SET_NULL, null = True, related_name = 'ride_owner')
   extra_request = models.CharField(max_length = 100, null = True, blank = True)  
-  
+  ride_group = models.ForeignKey('Group', on_delete = models.SET_NULL, null = True, blank = True, related_name = 'ride_group')
   
   RIDE_STATUS = (('Open','OPEN'),
                  ('Cancelled', 'CANCELLED'),

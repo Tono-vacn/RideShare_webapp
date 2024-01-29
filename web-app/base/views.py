@@ -139,6 +139,19 @@ def view_my_ride(request, id):
     else:
       messages.info(request, "invalid view request")
   return render(request, "base/view_my_ride.html", {'all_rec':all_rec, 'user':cur_user, 'ride_status':ride_status})
+
+def edit_my_ride(request, id, ride_id):
+  cur_user = request.user
+  ride = get_object_or_404(Ride, id = ride_id)
+  if request.method == "POST":
+    form = RideRequestForm(request.POST, instance = ride)
+    if form.is_valid():
+      form.save()
+      return redirect("base:view_my_ride", id = id)
+    else:
+      messages.info(request, "invalid form")
+  else:
+    form = RideRequestForm(instance = ride)
   # return HttpResponse("test")
 
 
