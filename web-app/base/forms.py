@@ -32,4 +32,6 @@ class CreatDriverForm_ADD(UserChangeForm):
         fields = ['license_num','plate_num','max_passenger','vehicle_type','vehicle_brand']
 
 class RideRequestForm(ModelForm):
-  pass
+  class Meta:
+    model = Ride
+    fields = ['start','destination','pick_up_time','arrival_time','shared','owner_passenger_num','extra_request']

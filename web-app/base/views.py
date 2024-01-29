@@ -13,7 +13,7 @@ from django.core.mail import send_mail
 # Create your views here.
 
 from .models import *
-from .forms import CreateDriverForm,CreatePassengerForm, PasswordChangeForm, EditDriverForm, EditPassengerForm, CreatDriverForm_ADD
+from .forms import CreateDriverForm,CreatePassengerForm, PasswordChangeForm, EditDriverForm, EditPassengerForm, CreatDriverForm_ADD, RideRequestForm
 
 
 def init_page(request):
@@ -101,7 +101,44 @@ def register_as_driver(request,id):
     form = CreatDriverForm_ADD(instance = cur_user)
   return render(request, "base/register_as_driver.html", {'form':form, 'user':cur_user})
       
+
+def request_ride(request, id):
+  if request.method == "POST":
+    form = RideRequestForm(request.POST)
+    if form.is_valid():
+      ride = form.save(commit = False)
+      ride.owner = request.user
+      ride.save()
+      return redirect("base:index", id = id)
+    else:
+      messages.info(request, "invalid form")
+  else:
+    form = RideRequestForm()
+  return render(request, "base/request_ride.html", {'form':form, 'user':request.user})
       
+def view_my_ride(request, id):
+  cur_user = request.user
+  ride_status = "ALL"
+  all_rec = Ride.objects.filter(owner = cur_user)
+  confirmed_rec = all_rec.filter(ride_status = "CONFIRMED")
+  open_rec = all_rec.filter(ride_status = "OPEN")
+  completed_rec = all_rec.filter(ride_status = "COMPLETED")
+  cancelled_rec = all_rec.filter(ride_status = "CANCELLED")
+  if request.method == 'POST':
+    ride_status = request.POST.get("all_open_or_confirmed")
+    if ride_status == "ALL":
+      return render(request, "base/view_my_ride.html", {'all_rec':all_rec, 'user':cur_user, 'ride_status':ride_status})
+    elif ride_status == "CONFIRMED":
+      return render(request, "base/view_my_ride.html", {'all_rec':confirmed_rec, 'user':cur_user, 'ride_status':ride_status})
+    elif ride_status == "OPEN":
+      return render(request, "base/view_my_ride.html", {'all_rec':open_rec, 'user':cur_user, 'ride_status':ride_status})
+    elif ride_status == "COMPLETED":
+      return render(request, "base/view_my_ride.html", {'all_rec':completed_rec, 'user':cur_user, 'ride_status':ride_status})
+    elif ride_status == "CANCELLED":
+      return render(request, "base/view_my_ride.html", {'all_rec':cancelled_rec, 'user':cur_user, 'ride_status':ride_status})
+    else:
+      messages.info(request, "invalid view request")
+  return render(request, "base/view_my_ride.html", {'all_rec':all_rec, 'user':cur_user, 'ride_status':ride_status})
   # return HttpResponse("test")
 
 

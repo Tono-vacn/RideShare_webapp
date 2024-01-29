@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+       <meta charset="UTF-8">
+       <title>Create Your Order</title>
+   </head>
+   <body>
+
+     <form actio = "" method = "post">
+       {% csrf_token %}
+
+       <table>
+	 {{form.as_table}}
+	 </table>
+     <input type="submit" value="Create">
+     </form>
+     <p><a href="{% url 'base:index' user.id %}">Cancel</a></p>
+   </body>
+</html>

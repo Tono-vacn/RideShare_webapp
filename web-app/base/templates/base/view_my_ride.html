@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <style>
+      table, th, td {border: 1px solid black;}
+    </style>
+       <meta charset="UTF-8">
+       <title>View All Your Owned Ride</title>
+   </head>
+  <body>
+    <h1>These Are {{ride_status}} Rides That You Owned</h1>
+		{% if messages %}
+		{% for message in messages %}
+				<div id="messages" class="alert alert-info">{{ message }}</div>
+		{% endfor %}
+		{% endif %}
+     {% for ride in all_rec %}
+     <table style="width:100%">
+       <tr>
+	 <th>Owner Name</th>
+	 <th>Email</th>
+	 <th>Destination</th>
+	 <th>Arrival Time</th>
+	 <th>Owner Party Passengers</th>
+	 {% comment %} <th>Total Passengers</th> {% endcomment %}
+	 <th>Shared or Not</th>
+	 <th>Special Requests</th>
+	 <th>Ride Status</th>
+
+	 {% if ride.ride_status != 'OPEN' %}
+   <th>Driver</th>
+	 <th>Vehcile Type</th>
+	 <th>License Plate</th>
+	 {% endif %}
+       </tr>
+       <tr>
+	 <td>{{ride.owner.username}}</td>
+	 <td>{{ride.owner.email}}</td>
+	 <td>{{ride.destination}}</td>
+	 <td>{{ride.arrival_time}}</td>
+	 <td>{{ride.owner_passenger_num}}</td>
+	 {% comment %} <td>{{ride.total_people}}</td> {% endcomment %}
+	 <td>{{ride.shared}}</td>
+	 <td>{{ride.extra_request}}</td>
+	 <td>{{ride.ride_status}}</td>
+	 {% if ride.ride_status != 'OPEN' %}
+   <td>{{ride.driver.username}}</td>
+	 <td>{{ride.driver.vehicle_type}}</td>
+	 <td>{{ride.driver.plate_num}}</td>
+	 {% endif %}
+       </tr>
+     </table>
+     {% if ride.ride_status == 'Open' %}
+     <button><a 
+      {% comment %} href="{% url 'cancelride' ride.id %}" {% endcomment %}
+      >Cancel<a></button>
+     
+     <button><a 
+      {% comment %} href="{% url 'editride' ride.id %}" {% endcomment %}
+      >Edit<a></button>
+     {% endif %}
+	 {% endfor %}
+     
+       <button type="button">
+           <a href="{% url 'base:index' user.id %}">Return to Index</a>
+       </button>
+
+       <form method = "post" action="">
+	 {% csrf_token %}
+	 <select name = "all_open_or_confirmed">
+	   <option value="ALL" {% if ride_status == "ALL" %}selected{% endif %}>All</option>
+	   <option value="CONFIRMED" {% if ride_status == "CONFIRMED" %}selected{% endif %}>Confirmed</option>
+	   <option value="OPEN" {% if ride_status == "OPEN" %}selected{% endif %}>Open</option>
+     <option value="CANCELLED" {% if ride_status == "CANCELLED" %}selected{% endif %}>Cancelled</option>
+     <option value="COMPLETED" {% if ride_status == "COMPLETED" %}selected{% endif %}>Completed</option>
+	 </select>
+	 <input type = "submit" value="Update View">
+	 </form>
+ 
+   </body>
+</html>

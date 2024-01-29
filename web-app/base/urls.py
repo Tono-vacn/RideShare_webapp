@@ -13,4 +13,6 @@ urlpatterns = [
     path("<str:id>/index/", views.index, name="index"),
     path("<str:id>/edit_profile/", views.edit_profile, name="edit_profile"),
     path("<str:id>/register_as_driver/", views.register_as_driver, name="register_as_driver"),
+    path("<str:id>/request_ride/", views.request_ride, name="request_ride"),
+    path("<str:id>/view_my_ride/", views.view_my_ride, name="view_my_ride"),
 ]
