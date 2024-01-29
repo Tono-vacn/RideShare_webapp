@@ -13,7 +13,7 @@ from django.core.mail import send_mail
 # Create your views here.
 
 from .models import *
-from .forms import CreateCustomUserForm, EditCustomUserForm, PasswordChangeForm
+from .forms import CreateCustomUserForm, PasswordChangeForm, EditDriverForm, EditPassengerForm, CreatDriverForm
 
 
 def init_page(request):
@@ -67,7 +67,7 @@ def index(request, id):
 def edit_profile(request, id):
   # cur_user = request.CustomUser
   if request.method == "POST":
-    form = EditCustomUserForm(request.POST, instance = request.user)
+    form = EditPassengerForm(request.POST, instance = request.user) if request.user.user_cata == "Passenger" else EditDriverForm(request.POST, instance = request.user)
     form_password = PasswordChangeForm(request.user, request.POST)
     if form.is_valid() and form_password.is_valid():
       # cur_user.email = form.cleaned_data["email"]
@@ -79,10 +79,20 @@ def edit_profile(request, id):
     else:
       messages.info(request, "invalid form")
   else:
-    form = EditCustomUserForm(instance = request.user)
+    form = EditPassengerForm(instance = request.user) if request.user.user_cata == "Passenger" else EditDriverForm(instance = request.user)
     form_password = PasswordChangeForm(request.user)
   return render(request, "base/edit_profile.html", {'form':form, 'form_password':form_password,'user':request.user})
     
+    
+def register_as_driver(request,id):
+  cur_user = get_object_or_404(CustomUser, id = id)
+  if request.method == "POST":
+    # cur_user.user_cata = "Driver"
+    form = CreatDriverForm(request.POST, instance = cur_user)
+    if form.is_valid():
+      form.save()
+      
+      
   # return HttpResponse("test")
 
 

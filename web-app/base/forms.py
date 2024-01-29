@@ -10,12 +10,21 @@ class CreateCustomUserForm(UserCreationForm):
     model = CustomUser
     fields = ['username','email','phone_num','user_cata','license_num','plate_num']
     
-class EditCustomUserForm(UserChangeForm):
+class EditPassengerForm(UserChangeForm):
   class Meta:
     model = CustomUser
-    fields = ['username','email','phone_num','user_cata','license_num','plate_num','max_passenger','vehicle_type','vehicle_brand']
+    fields = ['username','email','phone_num']
     
+class EditDriverForm(UserChangeForm):
+  class Meta:
+    model = CustomUser
+    fields = ['username','email','phone_num','license_num','plate_num','max_passenger','vehicle_type','vehicle_brand']
 # class PasswordChangeForm(PasswordChangeForm):
+
+class CreatDriverForm(UserChangeForm):
+    class Meta:
+        model = CustomUser
+        fields = ['license_num','plate_num','max_passenger','vehicle_type','vehicle_brand']
 
 class RideRequestForm(ModelForm):
   pass
