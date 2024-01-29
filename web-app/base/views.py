@@ -1,5 +1,6 @@
 # from multiprocessing import context
 from typing import Any
+from django.db import transaction
 from django.db.models.query import QuerySet
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse, HttpResponseRedirect
@@ -101,14 +102,21 @@ def register_as_driver(request,id):
     form = CreatDriverForm_ADD(instance = cur_user)
   return render(request, "base/register_as_driver.html", {'form':form, 'user':cur_user})
       
-
+@transaction.atomic
 def request_ride(request, id):
   if request.method == "POST":
     form = RideRequestForm(request.POST)
     if form.is_valid():
       ride = form.save(commit = False)
       ride.owner = request.user
+      if ride.shared:
+        #add code here
+        ride_group = Group.objects.create(sharer = ride.owner, total_group_num = ride.owner_passenger_num, order = ride)
+        ride.ride_group = ride_group
+
       ride.save()
+      # ride.owner = request.user
+      # ride.save()
       return redirect("base:index", id = id)
     else:
       messages.info(request, "invalid form")
@@ -120,10 +128,14 @@ def view_my_ride(request, id):
   cur_user = request.user
   ride_status = "ALL"
   all_rec = Ride.objects.filter(owner = cur_user)
-  confirmed_rec = all_rec.filter(ride_status = "CONFIRMED")
-  open_rec = all_rec.filter(ride_status = "OPEN")
-  completed_rec = all_rec.filter(ride_status = "COMPLETED")
-  cancelled_rec = all_rec.filter(ride_status = "CANCELLED")
+  confirmed_rec = Ride.objects.filter(owner = cur_user, ride_status = "CONFIRMED")
+  open_rec = Ride.objects.filter(owner = cur_user, ride_status = "OPEN")
+  completed_rec = Ride.objects.filter(owner = cur_user, ride_status = "COMPLETED")
+  cancelled_rec = Ride.objects.filter(owner = cur_user, ride_status = "CANCELLED")
+  # confirmed_rec = all_rec.filter(ride_status = "CONFIRMED")
+  # open_rec = all_rec.filter(ride_status = "OPEN")
+  # completed_rec = all_rec.filter(ride_status = "COMPLETED")
+  # cancelled_rec = all_rec.filter(ride_status = "CANCELLED")
   if request.method == 'POST':
     ride_status = request.POST.get("all_open_or_confirmed")
     if ride_status == "ALL":
@@ -140,19 +152,33 @@ def view_my_ride(request, id):
       messages.info(request, "invalid view request")
   return render(request, "base/view_my_ride.html", {'all_rec':all_rec, 'user':cur_user, 'ride_status':ride_status})
 
+def cancel_ride(request,id):
+  pass
+  # cancelled_ride = Ride.objects.get(id=id)
+  # cur_user = cancelled_ride.owner
+  # for sharer in cancelled_ride.ride_group.all():
+  #     sharer.total_sharers = None
+  #     sharer.save()
+  # cancelled_ride.delete()
+  # return redirect('view_owned_ride',id=user_id)
+
 def edit_my_ride(request, id, ride_id):
-  cur_user = request.user
-  ride = get_object_or_404(Ride, id = ride_id)
-  if request.method == "POST":
-    form = RideRequestForm(request.POST, instance = ride)
-    if form.is_valid():
-      form.save()
-      return redirect("base:view_my_ride", id = id)
-    else:
-      messages.info(request, "invalid form")
-  else:
-    form = RideRequestForm(instance = ride)
-  # return HttpResponse("test")
+  pass
+  # cur_user = request.user
+  # ride = get_object_or_404(Ride, id = ride_id)
+  # if request.method == "POST":
+  #   form = RideRequestForm(request.POST, instance = ride)
+  #   if form.is_valid():
+  #     form.save()
+  #     return redirect("base:view_my_ride", id = id)
+  #   else:
+  #     messages.info(request, "invalid form")
+  # else:
+  #   form = RideRequestForm(instance = ride)
+
+
+
+# return HttpResponse("test")
 
 
 # def IndexView(generic.ListView):

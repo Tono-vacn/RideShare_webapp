@@ -110,12 +110,12 @@ class Ride(models.Model):
   extra_request = models.CharField(max_length = 100, null = True, blank = True)  
   ride_group = models.ForeignKey('Group', on_delete = models.SET_NULL, null = True, blank = True, related_name = 'ride_group')
   
-  RIDE_STATUS = (('Open','OPEN'),
-                 ('Cancelled', 'CANCELLED'),
-                 ('Comfirmed','COMFIRMED'),
-                 ('In Progress', 'PROGRESS'),
-                 ('Completed','COMPLETED'))
-  ride_status = models.CharField(max_length = 15, choices = RIDE_STATUS, default = 'open')
+  RIDE_STATUS = (('OPEN','OPEN'),
+                 ('CANCELLED', 'CANCELLED'),
+                 ('COMFIRMED','COMFIRMED'),
+                 ('PROGRESS', 'PROGRESS'),
+                 ('COMPLETED','COMPLETED'))
+  ride_status = models.CharField(max_length = 15, choices = RIDE_STATUS, default = 'OPEN')
   
   def __str__(self):
     return str(self.id)
@@ -127,7 +127,8 @@ class Group(models.Model):
   group_id = models.UUIDField(primary_key=True, auto_created=True, default=uuid.uuid4)
   sharer = models.ForeignKey(CustomUser, on_delete = models.SET_NULL, null = True, related_name = 'group_owner')
   companions = models.ManyToManyField(CustomUser, related_name="participated_group")
-  order = models.ForeignKey(CustomUser, on_delete = models.CASCADE, related_name = 'group_order')
+  order = models.ForeignKey(Ride, on_delete = models.CASCADE, related_name = 'group_order')
+  total_group_num = models.IntegerField(null = True, blank = True)
   def __str__(self):
     return str(self.group_id)
   def get_absolute_url(self):
