@@ -117,6 +117,15 @@ class Ride(models.Model):
                  ('COMPLETED','COMPLETED'))
   ride_status = models.CharField(max_length = 15, choices = RIDE_STATUS, default = 'OPEN')
   
+  VEHICLE_TYPE = (
+      ('Economy', 'Economy'),
+      ('Comfort', 'Comfort'),
+      ('Large', 'Large'),
+      ('XL', 'XL')
+  )
+  
+  vehicle_type = models.CharField(max_length = 20, null=True, blank=True, choices = VEHICLE_TYPE, default = "Economy")
+  
   def __str__(self):
     return str(self.id)
   

@@ -39,7 +39,7 @@
 
 	<button type="button">
             <a 
-            {% comment %} href="{% url 'driversearch' driver.user.id %}" {% endcomment %}
+            href="{% url 'base:view_open_ride' cur_user.id %}"
             >Take An Order as Driver !</a>
 	</button>
 		
@@ -56,14 +56,14 @@
 
 	<button type="button">
             <a 
-            {% comment %} href="{% url 'request' driver.user.id %}" {% endcomment %}
+            href="{% url 'base:request_ride' cur_user.id%}"
             >Click here to Request Open Ride!</a>
         </button>
 
 	
 	<button type="button">
             <a 
-            {% comment %} href="{% url 'view_owned_ride' driver.user.id %}" {% endcomment %}
+            href="{% url 'base:view_my_ride' cur_user.id%}"
             >View My Owned Ride</a>
         </button>
 

@@ -1,0 +1,86 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <style>
+      table, th, td {border: 1px solid black;}
+    </style>
+       <meta charset="UTF-8">
+       <title>View All Available Rides</title>
+   </head>
+  <body>
+    <h1>These Are Opens Rides That Matched Your Vehicle Info</h1>
+    {% for ride in open_rec %}
+    {% if ride.shared == False%}
+    {% if  ride.owner_passenger_num <= capacity and ride.owner != user%}
+    {% comment %} {% if driver_special_request == ride.special_request or ride.special_request == '' %} {% endcomment %}
+     <table style="width:100%">
+       <tr>
+	 <th>Owner Name</th>
+	 <th>Email</th>
+	 <th>Destination</th>
+	 <th>Arrival Time</th>
+	 {% comment %} <th>Owner Party Passengers</th> {% endcomment %}
+	 <th>Total Passengers</th>
+	 <th>Shared or Not</th>
+	 <th>Special Requests</th>
+	 <th>Ride Status</th>
+       </tr>
+       <tr>
+	 <td>{{ride.owner.username}}</td>
+	 <td>{{ride.owner.email}}</td>
+	 <td>{{ride.destination}}</td>
+	 <td>{{ride.arrival_time}}</td> 
+	 <td>{{ride.owner_passenger_num}}</td>
+	 {% comment %} <td>{{ride.total_people}}</td> {% endcomment %}
+	 <td>{{ride.shared}}</td>
+	 <td>{{ride.extra_request}}</td>
+	 <td>{{ride.ride_status}}</td>
+       </tr>
+     </table>
+     
+     <button><a 
+      {% comment %} href="{% url 'confirmride' ride.id %}" {% endcomment %}
+      >Confirm<a></button>
+     {% endif %}
+     {%else%}
+      {% if  ride.ride_group.total_group_num <= capacity and ride.owner != user%}
+      <table style="width:100%">
+        <tr>
+    <th>Owner Name</th>
+    <th>Email</th>
+    <th>Destination</th>
+    <th>Arrival Time</th>
+    <th>Owner Party Passengers</th>
+    <th>Total Passengers</th>
+    <th>Shared or Not</th>
+    <th>Special Requests</th>
+    <th>Ride Status</th>
+        </tr>
+        <tr>
+    <td>{{ride.owner.username}}</td>
+    <td>{{ride.owner.email}}</td>
+    <td>{{ride.destination}}</td>
+    <td>{{ride.arrival_time}}</td> 
+    <td>{{ride.owner_passenger_num}}</td>
+    <td>{{ride.ride_group.total_group_num}}</td>
+    <td>{{ride.shared}}</td>
+    <td>{{ride.extra_request}}</td>
+    <td>{{ride.ride_status}}</td>
+        </tr>
+      </table>
+      
+      <button><a 
+        {% comment %} href="{% url 'confirmride' ride.id %}" {% endcomment %}
+        >Confirm<a></button>
+      {%endif%}
+     {% endif %}
+	 {% endfor %}
+     
+       <button type="button">
+           <a href="{% url 'base:index' user.id %}">Return to Index</a>
+       </button>
+
+ 
+   </body>
+</html>

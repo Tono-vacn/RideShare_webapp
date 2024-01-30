@@ -199,6 +199,10 @@ def cancel_ride(request,id,ride_id):
   cancelled_ride.delete()
   return redirect('base:view_my_ride',id=id)
 
+def view_open_ride(request, id):
+  cur_user = CustomUser.objects.get(id = id)
+  open_rec = Ride.objects.filter(ride_status = "OPEN", vehicle_type = cur_user.vehicle_type)
+  return render(request, "base/view_open_ride.html", {'open_rec':open_rec, 'user':cur_user, 'capacity':cur_user.max_passenger})
 # return HttpResponse("test")
 
 
