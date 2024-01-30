@@ -51,13 +51,10 @@
        </tr>
      </table>
      {% if ride.ride_status == 'OPEN' %}
-     <button><a 
-      {% comment %} href="{% url 'cancelride' ride.id %}" {% endcomment %}
-      >Cancel<a></button>
+     <button><a href="{% url 'base:cancel_ride' id=user.id ride_id=ride.id %}">Cancel<a></button>
      
      <button><a 
-      href="{% url 'base:edit_my_ride' id=user.id ride_id=ride.id %}"
-      >Edit<a></button>
+      href="{% url 'base:edit_my_ride' id=user.id ride_id=ride.id %}">Edit<a></button>
      {% endif %}
 	 {% endfor %}
      

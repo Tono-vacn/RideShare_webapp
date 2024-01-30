@@ -152,16 +152,6 @@ def view_my_ride(request, id):
       messages.info(request, "invalid view request")
   return render(request, "base/view_my_ride.html", {'all_rec':all_rec, 'user':cur_user, 'ride_status':ride_status})
 
-def cancel_ride(request,id):
-  pass
-  # cancelled_ride = Ride.objects.get(id=id)
-  # cur_user = cancelled_ride.owner
-  # for sharer in cancelled_ride.ride_group.all():
-  #     sharer.total_sharers = None
-  #     sharer.save()
-  # cancelled_ride.delete()
-  # return redirect('view_owned_ride',id=user_id)
-
 @transaction.atomic
 def edit_my_ride(request, id, ride_id):
   cur_user = request.user
@@ -198,7 +188,16 @@ def edit_my_ride(request, id, ride_id):
     form = RideRequestForm(instance = ride)
   return render(request, "base/edit_my_ride.html", {'form':form, 'user':cur_user})
 
-
+def cancel_ride(request,id,ride_id):
+  cancelled_ride = Ride.objects.get(id=ride_id)
+  # cur_user = cancelled_ride.owner
+  # for sharer in cancelled_ride.ride_group.companions.all():
+  #     sharer.total_sharers = None
+  #     sharer.save()
+  if cancelled_ride.ride_group:
+    cancelled_ride.ride_group.delete()
+  cancelled_ride.delete()
+  return redirect('base:view_my_ride',id=id)
 
 # return HttpResponse("test")
 
