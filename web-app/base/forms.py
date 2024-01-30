@@ -35,3 +35,9 @@ class RideRequestForm(ModelForm):
   class Meta:
     model = Ride
     fields = ['start','destination','pick_up_time','arrival_time','shared','vehicle_type','owner_passenger_num','extra_request']
+    
+class ShareForm(ModelForm):
+  class Meta:
+    model = Ride
+    # need to be changed here
+    fields = ['start','destination','owner_passenger_num']
