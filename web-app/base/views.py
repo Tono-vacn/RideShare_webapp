@@ -162,19 +162,39 @@ def cancel_ride(request,id):
   # cancelled_ride.delete()
   # return redirect('view_owned_ride',id=user_id)
 
+@transaction.atomic
 def edit_my_ride(request, id, ride_id):
-  pass
-  # cur_user = request.user
-  # ride = get_object_or_404(Ride, id = ride_id)
-  # if request.method == "POST":
-  #   form = RideRequestForm(request.POST, instance = ride)
-  #   if form.is_valid():
-  #     form.save()
-  #     return redirect("base:view_my_ride", id = id)
-  #   else:
-  #     messages.info(request, "invalid form")
-  # else:
-  #   form = RideRequestForm(instance = ride)
+  cur_user = request.user
+  ride = get_object_or_404(Ride, id = ride_id)
+  # ride = Ride.objects.get(id=ride_id)
+  old_ride_group = ride.ride_group
+  old_ride_num = ride.owner_passenger_num
+  old_shared = ride.shared
+  if request.method == "POST":
+    form = RideRequestForm(request.POST)
+    if form.is_valid():
+      # form.save()
+      ride.destination = form.cleaned_data["destination"]
+      ride.start = form.cleaned_data["start"]
+      ride.arrival_time = form.cleaned_data["arrival_time"]
+      ride.pick_up_time = form.cleaned_data["pick_up_time"]
+      ride.shared = form.cleaned_data["shared"]
+      ride.owner_passenger_num = form.cleaned_data["owner_passenger_num"]
+      ride.extra_request = form.cleaned_data["extra_request"]
+      if ride.shared and not old_shared:
+        ride.ride_group = Group.objects.create(sharer = ride.owner, total_group_num = ride.owner_passenger_num, order = ride)
+      elif not ride.shared and old_shared:
+        if old_ride_group:
+          old_ride_group.delete()
+        ride.ride_group = None
+      elif ride.shared and old_shared:
+        ride.ride_group.total_group_num += (ride.owner_passenger_num-old_ride_num)
+      return redirect("base:view_my_ride", id = id)
+    else:
+      messages.info(request, "invalid form")
+  else:
+    form = RideRequestForm(instance = ride)
+  return render(request, "base/request_ride.html", {'form':form, 'user':cur_user})
 
 
 
