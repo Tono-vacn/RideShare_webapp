@@ -126,8 +126,8 @@ class Ride(models.Model):
 class Group(models.Model):
   group_id = models.UUIDField(primary_key=True, auto_created=True, default=uuid.uuid4)
   sharer = models.ForeignKey(CustomUser, on_delete = models.SET_NULL, null = True, related_name = 'group_owner')
-  companions = models.ManyToManyField(CustomUser, related_name="participated_group")
-  order = models.ForeignKey(Ride, on_delete = models.CASCADE, related_name = 'group_order')
+  companions = models.ManyToManyField(CustomUser, related_name="participated_group", blank = True, null=True)
+  order = models.ForeignKey(Ride, on_delete = models.CASCADE, related_name = 'group_order',blank = True, null=True)
   total_group_num = models.IntegerField(null = True, blank = True)
   def __str__(self):
     return str(self.group_id)

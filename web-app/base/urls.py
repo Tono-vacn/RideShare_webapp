@@ -15,4 +15,5 @@ urlpatterns = [
     path("<str:id>/register_as_driver/", views.register_as_driver, name="register_as_driver"),
     path("<str:id>/request_ride/", views.request_ride, name="request_ride"),
     path("<str:id>/view_my_ride/", views.view_my_ride, name="view_my_ride"),
+    path("<str:id>/view_my_ride/<str:ride_id>/edit_ride/", views.edit_my_ride, name="edit_my_ride"),
 ]

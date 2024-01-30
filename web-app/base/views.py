@@ -165,8 +165,8 @@ def cancel_ride(request,id):
 @transaction.atomic
 def edit_my_ride(request, id, ride_id):
   cur_user = request.user
-  ride = get_object_or_404(Ride, id = ride_id)
-  # ride = Ride.objects.get(id=ride_id)
+  # ride:Ride = get_object_or_404(Ride, id = ride_id)
+  ride:Ride = Ride.objects.get(id=ride_id)
   old_ride_group = ride.ride_group
   old_ride_num = ride.owner_passenger_num
   old_shared = ride.shared
@@ -189,12 +189,14 @@ def edit_my_ride(request, id, ride_id):
         ride.ride_group = None
       elif ride.shared and old_shared:
         ride.ride_group.total_group_num += (ride.owner_passenger_num-old_ride_num)
+        ride.ride_group.save()
+      ride.save()
       return redirect("base:view_my_ride", id = id)
     else:
       messages.info(request, "invalid form")
   else:
     form = RideRequestForm(instance = ride)
-  return render(request, "base/request_ride.html", {'form':form, 'user':cur_user})
+  return render(request, "base/edit_my_ride.html", {'form':form, 'user':cur_user})
 
 
 
