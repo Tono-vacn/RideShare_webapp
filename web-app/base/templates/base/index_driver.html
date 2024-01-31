@@ -7,6 +7,12 @@
     <body>
         <h2>Welcome to service,{{cur_user.username}}</h2>
 
+        {% if messages %}
+        {% for message in messages %}
+            <div id="messages" class="alert alert-info">{{ message }}</div>
+        {% endfor %}
+        {% endif %}
+
         {% comment %} <button type="button"><a {% comment %} href="{% url 'edituserinfo' driver.user.id %}">Edit your User Information</a></button> {% endcomment %}
 
         <button type="button">
@@ -71,8 +77,15 @@
 	
 	<button type="button">
             <a 
-            {% comment %} href="{% url 'view_drive_ride' driver.user.id %}" {% endcomment %}
+            href="{% url 'base:view_taken_ride' cur_user.id %}"
             >View My Drive Ride</a>
+        </button>
+
+
+    <button type="button">
+            <a 
+            href="{% url 'base:view_completed_ride' cur_user.id %}"
+            >View My Completed Ride</a>
         </button>
 	
     </body>

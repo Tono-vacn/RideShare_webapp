@@ -112,7 +112,7 @@ class Ride(models.Model):
   
   RIDE_STATUS = (('OPEN','OPEN'),
                  ('CANCELLED', 'CANCELLED'),
-                 ('COMFIRMED','COMFIRMED'),
+                 ('CONFIRMED','CONFIRMED'),
                  ('PROGRESS', 'PROGRESS'),
                  ('COMPLETED','COMPLETED'))
   ride_status = models.CharField(max_length = 15, choices = RIDE_STATUS, default = 'OPEN')

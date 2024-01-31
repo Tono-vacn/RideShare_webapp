@@ -6,6 +6,12 @@
    </head>
    <body>
 
+    {% if messages %}
+    {% for message in messages %}
+        <div id="messages" class="alert alert-info">{{ message }}</div>
+    {% endfor %}
+    {% endif %}
+
      <form actio = "" method = "post">
        {% csrf_token %}
 

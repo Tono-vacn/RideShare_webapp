@@ -61,14 +61,20 @@
      <button><a href="{% url 'base:quit_ride' id=user.id ride_id=ride.id%}">Quit<a></button>
      {% endif %}
 
+		 {% if view_status == 'confirmed'%}
+		 <button><a 
+			href="{% url 'base:complete_ride' id=user.id ride_id=ride.id %}"
+			>Complete<a></button>
+		 {% endif %}
+
 	 {% endfor %}
      
        <button type="button">
            <a href="{% url 'base:index' user.id %}">Return to Index</a>
        </button>
-
+{% if view_status != "confirmed" and view_status != "completed" %}
        <form method = "post" action="">
-	 {% csrf_token %}
+	 {% csrf_token %}""
 	 <select name = "all_open_or_confirmed">
 	   <option value="ALL" {% if ride_status == "ALL" %}selected{% endif %}>All</option>
 	   <option value="CONFIRMED" {% if ride_status == "CONFIRMED" %}selected{% endif %}>Confirmed</option>
@@ -78,6 +84,7 @@
 	 </select>
 	 <input type = "submit" value="Update View">
 	 </form>
+{% endif %}
  
    </body>
 </html>

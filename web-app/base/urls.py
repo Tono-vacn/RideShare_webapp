@@ -23,4 +23,7 @@ urlpatterns = [
     path("<str:id>/view_joined_ride/", views.view_joined_ride, name="view_joined_ride"),
     path("<str:id>/quit_ride/<str:ride_id>/", views.quit_ride, name="quit_ride"),
     path("<str:id>/confirm_ride/<str:ride_id>/", views.confirm_ride, name="confirm_ride"),
+    path("<str:id>/view_taken_ride/", views.view_taken_ride, name="view_taken_ride"),
+    path("<str:id>/complete_ride/<str:ride_id>/", views.complete_ride, name="complete_ride"),
+    path("<str:id>/view_completed_ride/", views.view_completed_ride, name="view_completed_ride"),
 ]

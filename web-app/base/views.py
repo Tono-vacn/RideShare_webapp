@@ -297,6 +297,42 @@ def confirm_ride(request, id, ride_id):
   else:
     messages.info(request, "This ride is not open for confirmation")
     return render(request, "base/error_state.html", {'user':cur_user})
+  
+
+def view_taken_ride(request, id):
+  cur_user = CustomUser.objects.get(id = id)
+  con_rec = Ride.objects.filter(driver = cur_user, ride_status = "CONFIRMED")
+  # print(con_rec)
+  return render(request, "base/view_my_ride.html", {'all_rec':con_rec, 'user':cur_user, 'ride_status':"Active", 'view_status':"confirmed"})
+
+@transaction.atomic  
+def complete_ride(request,id,ride_id):
+  cur_user = CustomUser.objects.get(id = id)
+  ride = get_object_or_404(Ride, id = ride_id)
+  ride.ride_status = "COMPLETED"
+  ride.save()
+  subject = "[Ride Service]Order Completion"
+  mail_source = settings.EMAIL_HOST_USER
+  msg = f"Your ride order has been completed by driver: {cur_user.username}."
+  email_list = [ride.owner.email] if ride.owner else []
+  if ride.ride_group and ride.ride_group.companions:
+    for sharer in ride.ride_group.companions.all():
+      email_list.append(sharer.email)
+  # send_mail(subject=subject, message=msg, from_email=mail_source, recipient_list=email_list)
+  msg = f"Your have completed the ride: {str(ride)}."
+  email_list = [cur_user.email]
+  # send_mail(subject=subject, message=msg, from_email=mail_source, recipient_list=email_list)
+  messages.info(request, "ride completed")
+  return redirect('base:view_taken_ride', id = id)
+
+
+def view_completed_ride(request, id):
+  cur_user = CustomUser.objects.get(id = id)
+  com_rec = Ride.objects.filter(driver = cur_user, ride_status = "COMPLETED")
+  return render(request, "base/view_my_ride.html", {'all_rec':com_rec, 'user':cur_user, 'ride_status':"All", 'view_status':"completed"})
+  
+  
+  
   # return redirect('base:view_my_ride', id = id)
 # def IndexView(generic.ListView):
 #   template_name = "base/index.html"
