@@ -7,16 +7,10 @@
     <body>
         <h2>Welcome to service,{{cur_user.username}}</h2>
 
-        <button type="button">
-            <a 
-            {% comment %} href="{% url 'edituserinfo' driver.user.id %}" {% endcomment %}
-            >Edit your User Information</a>
-        </button>
+        {% comment %} <button type="button"><a {% comment %} href="{% url 'edituserinfo' driver.user.id %}">Edit your User Information</a></button> {% endcomment %}
 
         <button type="button">
-            <a h
-            {% comment %} ref="{% url 'joinride' driver.user.id %}" {% endcomment %}
-            >Join an Existing Ride !</a>
+            <a href="{% url 'base:request_join_ride' cur_user.id %}">Join an Existing Ride !</a>
         </button>
 
         <ul>

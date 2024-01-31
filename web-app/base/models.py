@@ -142,5 +142,12 @@ class Group(models.Model):
     return str(self.group_id)
   def get_absolute_url(self):
       return reverse("order_detail", args = [str(self.group_id)])
+    
+class ShareGroupNumberRecord(models.Model):
+  group = models.ForeignKey(Group, on_delete = models.CASCADE,null = True, blank = True)
+  order = models.ForeignKey(Ride, on_delete = models.CASCADE,null = True, blank = True)
+  sharer = models.ForeignKey(CustomUser, on_delete = models.CASCADE,null = True, blank = True)
+  share_num = models.IntegerField(null = True, blank = True)
+  
   
 # class Vehicle(models.Model):

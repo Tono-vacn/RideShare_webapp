@@ -140,15 +140,15 @@ def view_my_ride(request, id):
   if request.method == 'POST':
     ride_status = request.POST.get("all_open_or_confirmed")
     if ride_status == "ALL":
-      return render(request, "base/view_my_ride.html", {'all_rec':all_rec, 'user':cur_user, 'ride_status':ride_status})
+      return render(request, "base/view_my_ride.html", {'all_rec':all_rec, 'user':cur_user, 'ride_status':ride_status, 'view_status':"owned"})
     elif ride_status == "CONFIRMED":
-      return render(request, "base/view_my_ride.html", {'all_rec':confirmed_rec, 'user':cur_user, 'ride_status':ride_status})
+      return render(request, "base/view_my_ride.html", {'all_rec':confirmed_rec, 'user':cur_user, 'ride_status':ride_status, 'view_status':"owned"})
     elif ride_status == "OPEN":
-      return render(request, "base/view_my_ride.html", {'all_rec':open_rec, 'user':cur_user, 'ride_status':ride_status})
+      return render(request, "base/view_my_ride.html", {'all_rec':open_rec, 'user':cur_user, 'ride_status':ride_status, 'view_status':"owned"})
     elif ride_status == "COMPLETED":
-      return render(request, "base/view_my_ride.html", {'all_rec':completed_rec, 'user':cur_user, 'ride_status':ride_status})
+      return render(request, "base/view_my_ride.html", {'all_rec':completed_rec, 'user':cur_user, 'ride_status':ride_status, 'view_status':"owned"})
     elif ride_status == "CANCELLED":
-      return render(request, "base/view_my_ride.html", {'all_rec':cancelled_rec, 'user':cur_user, 'ride_status':ride_status})
+      return render(request, "base/view_my_ride.html", {'all_rec':cancelled_rec, 'user':cur_user, 'ride_status':ride_status, 'view_status':"owned"})
     else:
       messages.info(request, "invalid view request")
   return render(request, "base/view_my_ride.html", {'all_rec':all_rec, 'user':cur_user, 'ride_status':ride_status, 'view_status':"owned"})
@@ -232,17 +232,38 @@ def join_ride(request,id,ride_id, share_passenger_num):
   if ride.ride_group:
     ride.ride_group.total_group_num += share_passenger_num
     ride.ride_group.companions.add(cur_user)
+    #newly added record
+    share_rec = ShareGroupNumberRecord.objects.create(group = ride.ride_group, order = ride, sharer = cur_user, share_num = share_passenger_num)
     ride.ride_group.save()
+    ride.save()
   else:
     messages.info(request, "wrong group status")
-  ride.save()
-  return redirect('base:index',id=id)
+  # return redirect('base:index',id=id)
+  return redirect('base:view_joined_ride', id = id)
   
 def view_joined_ride(request, id):
   cur_user = CustomUser.objects.get(id = id)
   all_rec = Ride.objects.filter(ride_group__companions = cur_user)
   return render(request, "base/view_my_ride.html", {'all_rec':all_rec, 'user':cur_user, 'ride_status':"ALL", 'view_status':"joined"})
 
+@transaction.atomic
+def quit_ride(request,id,ride_id):
+  cur_user = CustomUser.objects.get(id = id)
+  ride = Ride.objects.get(id = ride_id)
+  if ride.ride_status == "CONFIRMED":
+    messages.info(request, "ride already confirmed, unable to quit!")
+    return redirect('base:view_joined_ride', id = id)
+  if ride.ride_group:
+    rec = ShareGroupNumberRecord.objects.get(order = ride, sharer = cur_user)  
+    ride.ride_group.total_group_num -= rec.share_num
+    ride.ride_group.companions.remove(cur_user)
+    ride.ride_group.save()
+    ride.save()
+    rec.delete()
+    return redirect('base:view_joined_ride', id = id)
+  # else:
+  messages.info(request, "wrong group status")
+  return redirect('base:view_joined_ride', id = id)
 # def IndexView(generic.ListView):
 #   template_name = "base/index.html"
 #   context_object_name = "latest_question_list"

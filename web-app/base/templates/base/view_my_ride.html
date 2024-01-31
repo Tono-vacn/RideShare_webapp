@@ -50,12 +50,17 @@
 	 {% endif %}
        </tr>
      </table>
-     {% if ride.ride_status == 'OPEN' %}
+     {% if ride.ride_status == 'OPEN' and view_status == 'owned'%}
      <button><a href="{% url 'base:cancel_ride' id=user.id ride_id=ride.id %}">Cancel<a></button>
      
      <button><a 
       href="{% url 'base:edit_my_ride' id=user.id ride_id=ride.id %}">Edit<a></button>
      {% endif %}
+
+		 {% if ride.ride_status == 'OPEN' and view_status == 'joined'%}
+     <button><a href="{% url 'base:quit_ride' id=user.id ride_id=ride.id%}">Quit<a></button>
+     {% endif %}
+
 	 {% endfor %}
      
        <button type="button">
