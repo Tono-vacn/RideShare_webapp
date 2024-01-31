@@ -5,10 +5,10 @@
       table, th, td {border: 1px solid black;}
     </style>
        <meta charset="UTF-8">
-       <title>View All Your Owned Ride</title>
+       <title>View All Your {{view_status}} Ride</title>
    </head>
   <body>
-    <h1>These Are {{ride_status}} Rides That You Owned</h1>
+    <h1>These Are {{ride_status}} Rides That You {{view_status}}</h1>
 		{% if messages %}
 		{% for message in messages %}
 				<div id="messages" class="alert alert-info">{{ message }}</div>
@@ -22,7 +22,7 @@
 	 <th>Destination</th>
 	 <th>Arrival Time</th>
 	 <th>Owner Party Passengers</th>
-	 {% comment %} <th>Total Passengers</th> {% endcomment %}
+	 {%if ride.shared%}<th>Total Passengers</th>{%endif%}
 	 <th>Shared or Not</th>
 	 <th>Special Requests</th>
 	 <th>Ride Status</th>
@@ -39,7 +39,7 @@
 	 <td>{{ride.destination}}</td>
 	 <td>{{ride.arrival_time}}</td>
 	 <td>{{ride.owner_passenger_num}}</td>
-	 {% comment %} <td>{{ride.total_people}}</td> {% endcomment %}
+	 {% if ride.shared %} <td>{{ride.ride_group.total_group_num}}</td> {% endif %}
 	 <td>{{ride.shared}}</td>
 	 <td>{{ride.extra_request}}</td>
 	 <td>{{ride.ride_status}}</td>

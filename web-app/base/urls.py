@@ -19,4 +19,6 @@ urlpatterns = [
     path("<str:id>/view_my_ride/<str:ride_id>/cancel_ride/", views.cancel_ride, name="cancel_ride"),
     path("<str:id>/view_open_ride/", views.view_open_ride, name="view_open_ride"),#for driver search
     path("<str:id>/request_join_ride/", views.request_join_ride, name="request_join_ride"),
+    path("<str:id>/join_ride/<str:ride_id>/<int:share_passenger_num>/", views.join_ride, name="join_ride"),
+    path("<str:id>/view_joined_ride/", views.view_joined_ride, name="view_joined_ride"),
 ]

@@ -5,6 +5,12 @@
         <title>Riding share service</title>
     </head>
     <body>
+		{% if messages %}
+		{% for message in messages %}
+				<div id="messages" class="alert alert-info">{{ message }}</div>
+		{% endfor %}
+		{% endif %}
+
         <h2>Welcome to service,{{cur_user.username}}</h2>
 	
         <button type="button">
@@ -56,7 +62,7 @@
 	
 	<button type="button">
             <a 
-            {% comment %} href="{% url 'view_shared_ride' myuser.user.id%}" {% endcomment %}
+            href="{% url 'base:view_joined_ride' cur_user.id%}"
             >View My Joined Ride</a>
         </button>
 

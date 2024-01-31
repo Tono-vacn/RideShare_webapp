@@ -151,7 +151,7 @@ def view_my_ride(request, id):
       return render(request, "base/view_my_ride.html", {'all_rec':cancelled_rec, 'user':cur_user, 'ride_status':ride_status})
     else:
       messages.info(request, "invalid view request")
-  return render(request, "base/view_my_ride.html", {'all_rec':all_rec, 'user':cur_user, 'ride_status':ride_status})
+  return render(request, "base/view_my_ride.html", {'all_rec':all_rec, 'user':cur_user, 'ride_status':ride_status, 'view_status':"owned"})
 
 @transaction.atomic
 def edit_my_ride(request, id, ride_id):
@@ -224,8 +224,24 @@ def request_join_ride(request,id):
     else:
       messages.info(request, "invalid form")
   return render(request, "base/request_share_ride.html", {'form':form, 'cur_user':cur_user})
-  
 
+@transaction.atomic
+def join_ride(request,id,ride_id, share_passenger_num):
+  cur_user = CustomUser.objects.get(id = id)
+  ride = Ride.objects.get(id = ride_id)
+  if ride.ride_group:
+    ride.ride_group.total_group_num += share_passenger_num
+    ride.ride_group.companions.add(cur_user)
+    ride.ride_group.save()
+  else:
+    messages.info(request, "wrong group status")
+  ride.save()
+  return redirect('base:index',id=id)
+  
+def view_joined_ride(request, id):
+  cur_user = CustomUser.objects.get(id = id)
+  all_rec = Ride.objects.filter(ride_group__companions = cur_user)
+  return render(request, "base/view_my_ride.html", {'all_rec':all_rec, 'user':cur_user, 'ride_status':"ALL", 'view_status':"joined"})
 
 # def IndexView(generic.ListView):
 #   template_name = "base/index.html"

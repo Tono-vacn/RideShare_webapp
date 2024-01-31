@@ -54,7 +54,7 @@
 
       <button type="button">
         <a 
-        {% comment %} href="{% url 'base:jointhisride' user.id ride.id %}" {% endcomment %}
+        href="{% url 'base:join_ride' id=user.id ride_id=ride.id share_passenger_num=passenger_num%}"
         >Join This Ride</a>
 
      {%endif%}
