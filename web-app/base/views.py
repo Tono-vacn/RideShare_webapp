@@ -1,4 +1,5 @@
 # from multiprocessing import context
+import re
 from typing import Any
 from django.db import transaction
 from django.db.models.query import QuerySet
@@ -14,7 +15,7 @@ from django.core.mail import send_mail
 # Create your views here.
 
 from .models import *
-from .forms import CreateDriverForm,CreatePassengerForm, PasswordChangeForm, EditDriverForm, EditPassengerForm, CreatDriverForm_ADD, RideRequestForm
+from .forms import CreateDriverForm,CreatePassengerForm, PasswordChangeForm, EditDriverForm, EditPassengerForm, CreatDriverForm_ADD, RideRequestForm, ShareForm
 
 
 def init_page(request):
@@ -204,6 +205,26 @@ def view_open_ride(request, id):
   open_rec = Ride.objects.filter(ride_status = "OPEN", vehicle_type = cur_user.vehicle_type)
   return render(request, "base/view_open_ride.html", {'open_rec':open_rec, 'user':cur_user, 'capacity':cur_user.max_passenger})
 # return HttpResponse("test")
+
+def request_join_ride(request,id):
+  cur_user = CustomUser.objects.get(id = id)
+  form = ShareForm(request.POST)
+  if request.method == "POST":
+    if form.is_valid():
+      start = form.cleaned_data["start"]
+      destination = form.cleaned_data["destination"]
+      start_time = form.cleaned_data["start_time"]
+      end_time = form.cleaned_data["end_time"]
+      passenger_num = form.cleaned_data["passenger_num"]
+      
+      #
+      
+      all_ride_raw = Ride.objects.filter(start = start, destination = destination, shared = True)
+      return render(request, "base/available_ride_to_join.html", {'all_rec':all_ride_raw, 'user':cur_user, 'earliest':start_time, 'latest':end_time, 'destination':destination,'passenger_num':passenger_num, 'user':cur_user})
+    else:
+      messages.info(request, "invalid form")
+  return render(request, "base/request_share_ride.html", {'form':form, 'cur_user':cur_user})
+  
 
 
 # def IndexView(generic.ListView):

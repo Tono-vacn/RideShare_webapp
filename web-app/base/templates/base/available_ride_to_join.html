@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <style>
+      table, th, td {border: 1px solid black;}
+    </style>
+       <meta charset="UTF-8">
+       <title>View All Ride That You Can Join</title>
+   </head>
+  <body>
+    <h1>These Are Available Rides That You Owned</h1>
+		{% if messages %}
+		{% for message in messages %}
+				<div id="messages" class="alert alert-info">{{ message }}</div>
+		{% endfor %}
+		{% endif %}
+     {% for ride in all_rec %}
+     {% if ride.arrival_time <= latest and ride.arrival_time >= earliest and ride.owner != user and user not in ride.ride_group.companions.all%}
+     <table style="width:100%">
+       <tr>
+	 <th>Owner Name</th>
+	 <th>Email</th>
+	 <th>Destination</th>
+	 <th>Arrival Time</th>
+	 <th>Owner Party Passengers</th>
+	 <th>Total Passengers</th>
+	 {% comment %} <th>Shared or Not</th> {% endcomment %}
+	 <th>Special Requests</th>
+	 <th>Ride Status</th>
+
+	 {% if ride.ride_status != 'OPEN' %}
+   <th>Driver</th>
+	 <th>Vehcile Type</th>
+	 <th>License Plate</th>
+	 {% endif %}
+       </tr>
+       <tr>
+	 <td>{{ride.owner.username}}</td>
+	 <td>{{ride.owner.email}}</td>
+	 <td>{{ride.destination}}</td>
+	 <td>{{ride.arrival_time}}</td>
+	 <td>{{ride.owner_passenger_num}}</td>
+	 <td>{{ride.ride_group.total_group_num}}</td>
+	 {% comment %} <td>{{ride.shared}}</td> {% endcomment %}
+	 <td>{{ride.extra_request}}</td>
+	 <td>{{ride.ride_status}}</td>
+	 {% if ride.ride_status != 'OPEN' %}
+   <td>{{ride.driver.username}}</td>
+	 <td>{{ride.driver.vehicle_type}}</td>
+	 <td>{{ride.driver.plate_num}}</td>
+	 {% endif %}
+       </tr>
+     </table>
+
+      <button type="button">
+        <a 
+        {% comment %} href="{% url 'base:jointhisride' user.id ride.id %}" {% endcomment %}
+        >Join This Ride</a>
+
+     {%endif%}
+     {% endfor %}
+
+        
+   
+        <button type="button">
+              <a href="{% url 'base:request_join_ride' user.id %}">Edit my Filter</a>
+        </button>
+
+        <button type="button">
+              <a href="{% url 'base:index' user.id %}">Return to Index</a>
+        </button>
+ 
+   </body>
+</html>

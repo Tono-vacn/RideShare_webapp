@@ -15,7 +15,7 @@
         	
         <button type="button">
             <a 
-            {% comment %} href="{% url 'joinride' cur_user.username%}" {% endcomment %}
+            href="{% url 'base:request_join_ride' cur_user.id%}"
             >Join an Existing Ride !</a>
         </button>
 

@@ -36,8 +36,13 @@ class RideRequestForm(ModelForm):
     model = Ride
     fields = ['start','destination','pick_up_time','arrival_time','shared','vehicle_type','owner_passenger_num','extra_request']
     
-class ShareForm(ModelForm):
-  class Meta:
-    model = Ride
-    # need to be changed here
-    fields = ['start','destination','owner_passenger_num']
+class ShareForm(Form):
+  start = CharField(max_length=100)
+  destination = CharField(max_length=100)
+  start_time = DateTimeField(input_formats=["%Y-%m-%d %H:%M"] ,help_text="YYYY-MM-DD HH:MM")
+  end_time = DateTimeField()
+  passenger_num = IntegerField()
+  # class Meta:
+    # model = Ride
+    # # need to be changed here
+    # fields = ['start','destination','owner_passenger_num']
