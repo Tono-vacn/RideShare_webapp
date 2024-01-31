@@ -12,6 +12,8 @@ from django.views import generic
 from django.contrib import auth,messages
 from django.contrib.auth.models import User
 from django.core.mail import send_mail
+
+from firsthomework import settings
 # Create your views here.
 
 from .models import *
@@ -264,6 +266,38 @@ def quit_ride(request,id,ride_id):
   # else:
   messages.info(request, "wrong group status")
   return redirect('base:view_joined_ride', id = id)
+
+@transaction.atomic
+def confirm_ride(request, id, ride_id):
+  cur_user = CustomUser.objects.get(id = id)
+  ride = get_object_or_404(Ride, id = ride_id)
+  if ride.ride_group and ride.ride_group.total_group_num > cur_user.max_passenger:
+    messages.info(request, "not enough capacity")
+    return render(request, "base/error_state.html", {'user':cur_user})
+  
+  if ride.ride_status == "OPEN":
+    ride.ride_status = "CONFIRMED"
+    ride.driver = cur_user
+    ride.save()
+    
+    subject = "[Ride Service]Order Confirmation"
+    mail_source = settings.EMAIL_HOST_USER
+    msg = f"Your ride order has been confirmed by driver: {cur_user.username}."
+    email_list = [ride.owner.email] if ride.owner else []
+    if ride.ride_group and ride.ride_group.companions:
+      for sharer in ride.ride_group.companions.all():
+        email_list.append(sharer.email)
+    # send_mail(subject=subject, message=msg, from_email=mail_source, recipient_list=email_list)
+    msg = f"Your have taken the ride: {str(ride)}."
+    email_list = [cur_user.email]
+    # send_mail(subject=subject, message=msg, from_email=mail_source, recipient_list=email_list)
+    messages.info(request, "ride confirmed")
+    return redirect('base:view_open_ride', id = id)
+        
+  else:
+    messages.info(request, "This ride is not open for confirmation")
+    return render(request, "base/error_state.html", {'user':cur_user})
+  # return redirect('base:view_my_ride', id = id)
 # def IndexView(generic.ListView):
 #   template_name = "base/index.html"
 #   context_object_name = "latest_question_list"

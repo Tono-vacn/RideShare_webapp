@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+       <meta charset="UTF-8">
+       <title></title>
+   </head>
+   <body>
+ 
+       <h1>ERROR! Wrong System State</h1>
+       {% if messages %}
+       {% for message in messages %}
+           <div id="messages" class="alert alert-info">{{ message }}</div>
+       {% endfor %}
+       {% endif %}
+       <button type="button">
+           <a href="{% url 'base:index' user.id %}">Back to Index</a>
+       </button>
+ 
+   </body>
+ 
+</html>

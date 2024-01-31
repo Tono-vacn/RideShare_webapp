@@ -139,3 +139,10 @@ AUTH_USER_MODEL = 'base.CustomUser'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.mailgun.org'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'postmaster@sandboxf2edb62ff4394085938fcecae861d43b.mailgun.org' 
+EMAIL_HOST_PASSWORD = '6da555f1ccc7ee9e6c2374e258054c45-69a6bd85-50e17c89'

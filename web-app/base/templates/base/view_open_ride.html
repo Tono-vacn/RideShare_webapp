@@ -10,9 +10,16 @@
    </head>
   <body>
     <h1>These Are Opens Rides That Matched Your Vehicle Info</h1>
+
+    {% if messages %}
+		{% for message in messages %}
+				<div id="messages" class="alert alert-info">{{ message }}</div>
+		{% endfor %}
+		{% endif %}
+
     {% for ride in open_rec %}
-    {% if ride.shared == False%}
-    {% if  ride.owner_passenger_num <= capacity and ride.owner != user%}
+      {% if ride.shared == False%}
+        {% if  ride.owner_passenger_num <= capacity and ride.owner != user%}
     {% comment %} {% if driver_special_request == ride.special_request or ride.special_request == '' %} {% endcomment %}
      <table style="width:100%">
        <tr>
@@ -40,11 +47,11 @@
      </table>
      
      <button><a 
-      {% comment %} href="{% url 'confirmride' ride.id %}" {% endcomment %}
+      href="{% url 'base:confirm_ride' id=user.id ride_id=ride.id%}"
       >Confirm<a></button>
-     {% endif %}
-     {%else%}
-      {% if  ride.ride_group.total_group_num <= capacity and ride.owner != user%}
+        {% endif %}
+      {%else%}
+        {% if  ride.ride_group.total_group_num <= capacity and ride.owner != user and user not in ride.ride_group.companions.all%}
       <table style="width:100%">
         <tr>
     <th>Owner Name</th>
@@ -69,11 +76,13 @@
     <td>{{ride.ride_status}}</td>
         </tr>
       </table>
-      
+
       <button><a 
-        {% comment %} href="{% url 'confirmride' ride.id %}" {% endcomment %}
+        href="{% url 'base:confirm_ride' id=user.id ride_id=ride.id%}"
         >Confirm<a></button>
-      {%endif%}
+      
+
+        {%endif%}
      {% endif %}
 	 {% endfor %}
      
