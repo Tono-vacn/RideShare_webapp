@@ -1,5 +1,4 @@
 # from multiprocessing import context
-import re
 from typing import Any
 from django.db import transaction
 from django.db.models.query import QuerySet
@@ -19,6 +18,59 @@ from firsthomework import settings
 from .models import *
 from .forms import CreateDriverForm,CreatePassengerForm, PasswordChangeForm, EditDriverForm, EditPassengerForm, CreatDriverForm_ADD, RideRequestForm, ShareForm
 
+
+import os.path
+import base64
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from google.auth.transport.requests import Request
+from google_auth_oauthlib.flow import InstalledAppFlow
+from googleapiclient.discovery import build
+from google.oauth2.credentials import Credentials
+
+def gmail_authenticate():
+    SCOPES = ['https://www.googleapis.com/auth/gmail.send']
+    creds = None
+    # token.json stored user access and refresh tokens
+    credentials_path = os.path.join(settings.BASE_DIR, 'credentials.json')
+    
+    if os.path.exists('token.json'):
+        creds = Credentials.from_authorized_user_file('token.json', SCOPES)
+    # Authentication if no valid credentials are available
+    if not creds or not creds.valid:
+        if creds and creds.expired and creds.refresh_token:
+            creds.refresh(Request())
+        else:
+            # This credentials.json is the credential you download from Google API portal when you 
+            # created the OAuth 2.0 Client IDs
+            flow = InstalledAppFlow.from_client_secrets_file(
+                credentials_path, SCOPES)
+            # this is the redirect URI which should match your API setting, you can 
+            # find this setting in Credentials/Authorized redirect URIs at the API setting portal
+            print("Starting local server...")
+            creds = flow.run_local_server(host='localhost', port=8080)
+            print("Local server started.")
+        # Save vouchers for later use
+        with open('token.json', 'w') as token:
+            token.write(creds.to_json())
+
+    return build('gmail', 'v1', credentials=creds)
+  
+def send_message(service, sender, to, subject, msg_html):
+    message = MIMEMultipart('alternative')
+    message['from'] = sender
+    message['to'] = to
+    message['subject'] = subject
+
+    msg = MIMEText(msg_html, 'html')
+    message.attach(msg)
+
+    raw = base64.urlsafe_b64encode(message.as_bytes())
+    raw = raw.decode()
+    body = {'raw': raw}
+
+    message = (service.users().messages().send(userId="me", body=body).execute())
+    print(f"Message Id: {message['id']}")
 
 def init_page(request):
   return render(request, "base/init_page.html")
@@ -246,6 +298,24 @@ def join_ride(request,id,ride_id, share_passenger_num):
 def view_joined_ride(request, id):
   cur_user = CustomUser.objects.get(id = id)
   all_rec = Ride.objects.filter(ride_group__companions = cur_user)
+  confirmed_rec = Ride.objects.filter(ride_group__companions = cur_user, ride_status = "CONFIRMED")
+  open_rec = Ride.objects.filter(ride_group__companions = cur_user, ride_status = "OPEN")
+  completed_rec = Ride.objects.filter(ride_group__companions = cur_user, ride_status = "COMPLETED")
+  cancelled_rec = Ride.objects.filter(ride_group__companions = cur_user, ride_status = "CANCELLED")
+  if request.method == 'POST':
+    ride_status = request.POST.get("all_open_or_confirmed")
+    if ride_status == "ALL":
+      return render(request, "base/view_my_ride.html", {'all_rec':all_rec, 'user':cur_user, 'ride_status':ride_status, 'view_status':"joined"})
+    elif ride_status == "CONFIRMED":
+      return render(request, "base/view_my_ride.html", {'all_rec':confirmed_rec, 'user':cur_user, 'ride_status':ride_status, 'view_status':"joined"})
+    elif ride_status == "OPEN":
+      return render(request, "base/view_my_ride.html", {'all_rec':open_rec, 'user':cur_user, 'ride_status':ride_status, 'view_status':"joined"})
+    elif ride_status == "COMPLETED":
+      return render(request, "base/view_my_ride.html", {'all_rec':completed_rec, 'user':cur_user, 'ride_status':ride_status, 'view_status':"joined"})
+    elif ride_status == "CANCELLED":
+      return render(request, "base/view_my_ride.html", {'all_rec':cancelled_rec, 'user':cur_user, 'ride_status':ride_status, 'view_status':"joined"})
+    else:
+      messages.info(request, "invalid view request")
   return render(request, "base/view_my_ride.html", {'all_rec':all_rec, 'user':cur_user, 'ride_status':"ALL", 'view_status':"joined"})
 
 @transaction.atomic
@@ -280,16 +350,25 @@ def confirm_ride(request, id, ride_id):
     ride.driver = cur_user
     ride.save()
     
+    service = gmail_authenticate()
+    
     subject = "[Ride Service]Order Confirmation"
     mail_source = settings.EMAIL_HOST_USER
-    msg = f"Your ride order has been confirmed by driver: {cur_user.username}."
-    email_list = [ride.owner.email] if ride.owner else []
+    msg = f"<h1>Your ride order has been confirmed by driver: {cur_user.username}.</h1>"
+    email_ = ride.owner.email if ride.owner else None
+    # service = gmail_authenticate()
+    send_message(service, "tonyjyc58@gmail.com", email_, subject, msg)
     if ride.ride_group and ride.ride_group.companions:
       for sharer in ride.ride_group.companions.all():
-        email_list.append(sharer.email)
+        send_message(service, "tonyjyc58@gmail.com", sharer.email, subject, msg)
+        # email_list.append(sharer.email)
     # send_mail(subject=subject, message=msg, from_email=mail_source, recipient_list=email_list)
-    msg = f"Your have taken the ride: {str(ride)}."
-    email_list = [cur_user.email]
+    msg = f"<h1>Your have taken the ride: {str(ride)}.</h1>"
+    # email_list = [cur_user.email]
+    
+    
+    
+    send_message(service, "tonyjyc58@gmail.com", cur_user.email, subject, msg)
     # send_mail(subject=subject, message=msg, from_email=mail_source, recipient_list=email_list)
     messages.info(request, "ride confirmed")
     return redirect('base:view_open_ride', id = id)
@@ -311,17 +390,36 @@ def complete_ride(request,id,ride_id):
   ride = get_object_or_404(Ride, id = ride_id)
   ride.ride_status = "COMPLETED"
   ride.save()
-  subject = "[Ride Service]Order Completion"
+  # subject = "[Ride Service]Order Completion"
+  # mail_source = settings.EMAIL_HOST_USER
+  # msg = f"Your ride order has been completed by driver: {cur_user.username}."
+  # email_list = [ride.owner.email] if ride.owner else []
+  # if ride.ride_group and ride.ride_group.companions:
+  #   for sharer in ride.ride_group.companions.all():
+  #     email_list.append(sharer.email)
+  # # send_mail(subject=subject, message=msg, from_email=mail_source, recipient_list=email_list)
+  # msg = f"Your have completed the ride: {str(ride)}."
+  # email_list = [cur_user.email]
+  # # send_mail(subject=subject, message=msg, from_email=mail_source, recipient_list=email_list)
+  service = gmail_authenticate()
+  subject = "[Ride Service]Order Accomplished"
   mail_source = settings.EMAIL_HOST_USER
-  msg = f"Your ride order has been completed by driver: {cur_user.username}."
-  email_list = [ride.owner.email] if ride.owner else []
+  msg = f"<h1>Your ride order has been completed by driver: {cur_user.username}.</h1>"
+  email_ = ride.owner.email if ride.owner else None
+  # service = gmail_authenticate()
+  send_message(service, "tonyjyc58@gmail.com", email_, subject, msg)
   if ride.ride_group and ride.ride_group.companions:
     for sharer in ride.ride_group.companions.all():
-      email_list.append(sharer.email)
+      send_message(service, "tonyjyc58@gmail.com", sharer.email, subject, msg)
+      # email_list.append(sharer.email)
   # send_mail(subject=subject, message=msg, from_email=mail_source, recipient_list=email_list)
-  msg = f"Your have completed the ride: {str(ride)}."
-  email_list = [cur_user.email]
-  # send_mail(subject=subject, message=msg, from_email=mail_source, recipient_list=email_list)
+  msg = f"<h1>Your have taken the ride: {str(ride)}.</h1>"
+  # email_list = [cur_user.email]
+    
+    
+    
+  send_message(service, "tonyjyc58@gmail.com", cur_user.email, subject, msg)
+  
   messages.info(request, "ride completed")
   return redirect('base:view_taken_ride', id = id)
 
@@ -332,7 +430,17 @@ def view_completed_ride(request, id):
   return render(request, "base/view_my_ride.html", {'all_rec':com_rec, 'user':cur_user, 'ride_status':"All", 'view_status':"completed"})
   
   
+def view_ride_detail(request, id, ride_id):
+  cur_user = CustomUser.objects.get(id = id)
+  ride = get_object_or_404(Ride, id = ride_id)
+  ride_group = ride.ride_group
+  records = ShareGroupNumberRecord.objects.filter(order = ride)
+  return render(request, "base/view_ride_detail.html", {'ride':ride, 'user':cur_user, 'ride_group':ride_group, 'records':records})
   
+  
+# def oauth2callback(request):
+#     # 这里你将处理重定向，例如使用请求中的授权码来获取访问令牌
+#     return HttpResponse('OAuth2 callback processed.')
   # return redirect('base:view_my_ride', id = id)
 # def IndexView(generic.ListView):
 #   template_name = "base/index.html"

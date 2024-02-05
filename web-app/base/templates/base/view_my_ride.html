@@ -67,6 +67,10 @@
 			>Complete<a></button>
 		 {% endif %}
 
+		 <button><a 
+			href="{% url 'base:view_ride_detail' id=user.id ride_id=ride.id %}"
+			>Details<a></button>
+
 	 {% endfor %}
      
        <button type="button">
@@ -74,7 +78,7 @@
        </button>
 {% if view_status != "confirmed" and view_status != "completed" %}
        <form method = "post" action="">
-	 {% csrf_token %}""
+	 {% csrf_token %}
 	 <select name = "all_open_or_confirmed">
 	   <option value="ALL" {% if ride_status == "ALL" %}selected{% endif %}>All</option>
 	   <option value="CONFIRMED" {% if ride_status == "CONFIRMED" %}selected{% endif %}>Confirmed</option>

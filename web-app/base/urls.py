@@ -26,4 +26,6 @@ urlpatterns = [
     path("<str:id>/view_taken_ride/", views.view_taken_ride, name="view_taken_ride"),
     path("<str:id>/complete_ride/<str:ride_id>/", views.complete_ride, name="complete_ride"),
     path("<str:id>/view_completed_ride/", views.view_completed_ride, name="view_completed_ride"),
+    path("<str:id>/view_ride_detail/<str:ride_id>/", views.view_ride_detail, name="view_ride_detail"),
+    # path('oauth2callback/', views.oauth2callback, name='oauth2callback'),
 ]
