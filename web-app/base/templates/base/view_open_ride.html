@@ -1,15 +1,18 @@
-
+{%load static%}
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <style>
-      table, th, td {border: 1px solid black;}
-    </style>
-       <meta charset="UTF-8">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/view.css'%}" rel="stylesheet">
        <title>View All Available Rides</title>
    </head>
   <body>
-    <h1>These Are Opens Rides That Matched Your Vehicle Info</h1>
+    <div class="background">
+			<div class="overlay box">
+    <h1 class="text-white">These Are Opens Rides That Matched Your Vehicle Info</h1>
 
     {% if messages %}
 		{% for message in messages %}
@@ -21,7 +24,8 @@
       {% if ride.shared == False%}
         {% if  ride.owner_passenger_num <= capacity and ride.owner != user%}
     {% comment %} {% if driver_special_request == ride.special_request or ride.special_request == '' %} {% endcomment %}
-     <table style="width:100%">
+    <div class="form-group">
+      <table style="width:100%" class="table table-custom">
        <tr>
 	 <th>Owner Name</th>
 	 <th>Email</th>
@@ -46,13 +50,20 @@
        </tr>
      </table>
      
-     <button><a 
-      href="{% url 'base:confirm_ride' id=user.id ride_id=ride.id%}"
-      >Confirm<a></button>
+     <a 
+      href="{% url 'base:confirm_ride' id=user.id ride_id=ride.id%}" class ="text-white"
+      >Confirm<a>
+
+        <a 
+        href="{% url 'base:view_ride_detail' id=user.id ride_id=ride.id %}"  class="text-white"
+        >Details<a>
+        
+    </div>
         {% endif %}
       {%else%}
         {% if  ride.ride_group.total_group_num <= capacity and ride.owner != user and user not in ride.ride_group.companions.all%}
-      <table style="width:100%">
+        <div class="form-group">
+      <table style="width:100%" class="table table-custom">
         <tr>
     <th>Owner Name</th>
     <th>Email</th>
@@ -77,19 +88,25 @@
         </tr>
       </table>
 
-      <button><a 
-        href="{% url 'base:confirm_ride' id=user.id ride_id=ride.id%}"
-        >Confirm<a></button>
-      
+        <a 
+        href="{% url 'base:confirm_ride' id=user.id ride_id=ride.id%}"  class = "text-white"
+        >Confirm<a>
 
+          <a 
+          href="{% url 'base:view_ride_detail' id=user.id ride_id=ride.id %}"  class="text-white"
+          >Details<a>
+      
+        </div>
         {%endif%}
      {% endif %}
 	 {% endfor %}
      
-       <button type="button">
-           <a href="{% url 'base:index' user.id %}">Return to Index</a>
-       </button>
 
+           <a href="{% url 'base:index' user.id %}"  class = "text-white">Return to Index</a>
+
+
+    </div>
+    </div>
  
    </body>
 </html>

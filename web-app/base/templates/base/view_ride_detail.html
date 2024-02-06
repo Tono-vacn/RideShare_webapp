@@ -1,21 +1,26 @@
+{%load static%}
 <!DOCTYPE html>
 <html lang="en">
     <head>
         <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+        <link href="{% static 'css/register.css'%}" rel="stylesheet">
         <title>Ride Details</title>
     </head>
     <body>
-        <h1>Details for ride: {{ride.id}}</h1>
+        <div class="background">
+            <div class="overlay box">
+        <h1 class="title">Details for ride: {{ride.id}}</h1>
 
         {% if messages %}
         {% for message in messages %}
             <div id="messages" class="alert alert-info">{{ message }}</div>
         {% endfor %}
         {% endif %}
-
+        <div class="form-group">
         <ul>
-            {% comment %} <li>First Name:{{driver.user.first_name}} </li>
-            <li>Last Name: {{driver.user.last_name}} </li> {% endcomment %}
             <li>Owner: {{ride.owner.username}}</li>
             <li>Destination: {{ride.destination}}</li>
             <li>Arrival Time: {{ride.arrival_time}}</li>
@@ -23,7 +28,6 @@
             <li>Is Shared: {{ride.shared}}</li>
             {%if ride.shared%}
             <li>Number of All Passengers: {{ride.ride_group.total_group_num}}</li>
-            {% comment %} show all the sharers with their group numbers followed {% endcomment %}
             <li>Owner Group: {{ride.owner_passenger_num}} people</li>
             {% for rec in records %}
             <li>Sharer Group: {{rec.sharer}} with {{rec.share_num}} people</li>
@@ -40,33 +44,13 @@
             <li>license_plate_number: {{ride.driver.license_num}}</li>
             <li>max_number_passengers: {{ride.driver.max_passenger}}</li>
             {%endif%}
-            {% comment %} <li>User ID: {{driver.user.id}}</li> {% endcomment %}
 
         </ul>
-{% comment %}         
-        <h3>Driver Information: You are a driver</h3>
-
-        <button type="button">
-            <a 
-            href="{% url 'base:edit_profile' cur_user.id%}"
-            >Edit your Driver Information</a>
-        </button>
-
-	<button type="button">
-            <a 
-            href="{% url 'base:view_open_ride' cur_user.id %}"
-            >Take An Order as Driver !</a>
-	</button>
-		
-        <ul>
-            <li>vehicle type: {{cur_user.vehicle_type}}</li>
-            <li>license_plate_number: {{cur_user.license_num}}</li>
-            <li>max_number_passengers: {{cur_user.max_passenger}}</li>
-            {% comment %} <li>special_request: {{cur_user.special_request}}</li>
-        </ul> {% endcomment %}
-    <button type="button">
-      <a href="{% url 'base:index' user.id %}">Return</a>
-    </button>
+    </div>
+      <p><a href="{% url 'base:index' user.id %}" class="btn btn-custom">Return</a>
+      </p>
 	
+</div>
+</div>
     </body>
 </html>

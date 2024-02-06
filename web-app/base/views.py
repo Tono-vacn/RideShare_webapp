@@ -113,20 +113,12 @@ def register(request, flag):
 def index(request, id):
   cur_user = CustomUser.objects.get(id = id)
   return render(request, "base/index.html", {"cur_user": cur_user})
-  # if cur_user.user_cata == "Passenger":
-  #   return render(request, "base/index_passenger.html", {"cur_user": cur_user})
-  # else: #cur_user.user_cata == "Driver":
-  #   return render(request, "base/index_driver.html", {"cur_user": cur_user})
 
 def edit_profile(request, id):
-  # cur_user = request.CustomUser
   if request.method == "POST":
     form = EditPassengerForm(request.POST, instance = request.user) if request.user.user_cata == "Passenger" else EditDriverForm(request.POST, instance = request.user)
     form_password = PasswordChangeForm(request.user, request.POST)
     if form.is_valid() and form_password.is_valid():
-      # cur_user.email = form.cleaned_data["email"]
-      # cur_user.phone_num = form.cleaned_data["phone_num"]
-      # cur_user.user_cata = form.cleaned_data["user_cata"]
       form.save()
       form_password.save()
       return redirect("base:index", id = id)
@@ -162,13 +154,10 @@ def request_ride(request, id):
       ride = form.save(commit = False)
       ride.owner = request.user
       if ride.shared:
-        #add code here
         ride_group = Group.objects.create(sharer = ride.owner, total_group_num = ride.owner_passenger_num, order = ride)
         ride.ride_group = ride_group
 
       ride.save()
-      # ride.owner = request.user
-      # ride.save()
       return redirect("base:index", id = id)
     else:
       messages.info(request, "invalid form")
@@ -184,12 +173,8 @@ def view_my_ride(request, id):
   open_rec = Ride.objects.filter(owner = cur_user, ride_status = "OPEN")
   completed_rec = Ride.objects.filter(owner = cur_user, ride_status = "COMPLETED")
   cancelled_rec = Ride.objects.filter(owner = cur_user, ride_status = "CANCELLED")
-  # confirmed_rec = all_rec.filter(ride_status = "CONFIRMED")
-  # open_rec = all_rec.filter(ride_status = "OPEN")
-  # completed_rec = all_rec.filter(ride_status = "COMPLETED")
-  # cancelled_rec = all_rec.filter(ride_status = "CANCELLED")
   if request.method == 'POST':
-    ride_status = request.POST.get("all_open_or_confirmed")
+    ride_status = request.POST.get("filter_status")
     if ride_status == "ALL":
       return render(request, "base/view_my_ride.html", {'all_rec':all_rec, 'user':cur_user, 'ride_status':ride_status, 'view_status':"owned"})
     elif ride_status == "CONFIRMED":
@@ -242,10 +227,6 @@ def edit_my_ride(request, id, ride_id):
 
 def cancel_ride(request,id,ride_id):
   cancelled_ride = Ride.objects.get(id=ride_id)
-  # cur_user = cancelled_ride.owner
-  # for sharer in cancelled_ride.ride_group.companions.all():
-  #     sharer.total_sharers = None
-  #     sharer.save()
   if cancelled_ride.ride_group:
     cancelled_ride.ride_group.delete()
   cancelled_ride.delete()
@@ -255,7 +236,6 @@ def view_open_ride(request, id):
   cur_user = CustomUser.objects.get(id = id)
   open_rec = Ride.objects.filter(ride_status = "OPEN", vehicle_type = cur_user.vehicle_type)
   return render(request, "base/view_open_ride.html", {'open_rec':open_rec, 'user':cur_user, 'capacity':cur_user.max_passenger})
-# return HttpResponse("test")
 
 def request_join_ride(request,id):
   cur_user = CustomUser.objects.get(id = id)
@@ -267,9 +247,6 @@ def request_join_ride(request,id):
       start_time = form.cleaned_data["start_time"]
       end_time = form.cleaned_data["end_time"]
       passenger_num = form.cleaned_data["passenger_num"]
-      
-      #
-      
       all_ride_raw = Ride.objects.filter(start = start, destination = destination, shared = True)
       return render(request, "base/available_ride_to_join.html", {'all_rec':all_ride_raw, 'user':cur_user, 'earliest':start_time, 'latest':end_time, 'destination':destination,'passenger_num':passenger_num, 'user':cur_user})
     else:
@@ -300,7 +277,7 @@ def view_joined_ride(request, id):
   completed_rec = Ride.objects.filter(ride_group__companions = cur_user, ride_status = "COMPLETED")
   cancelled_rec = Ride.objects.filter(ride_group__companions = cur_user, ride_status = "CANCELLED")
   if request.method == 'POST':
-    ride_status = request.POST.get("all_open_or_confirmed")
+    ride_status = request.POST.get("filter_status")
     if ride_status == "ALL":
       return render(request, "base/view_my_ride.html", {'all_rec':all_rec, 'user':cur_user, 'ride_status':ride_status, 'view_status':"joined"})
     elif ride_status == "CONFIRMED":
@@ -387,17 +364,6 @@ def complete_ride(request,id,ride_id):
   ride = get_object_or_404(Ride, id = ride_id)
   ride.ride_status = "COMPLETED"
   ride.save()
-  # subject = "[Ride Service]Order Completion"
-  # mail_source = settings.EMAIL_HOST_USER
-  # msg = f"Your ride order has been completed by driver: {cur_user.username}."
-  # email_list = [ride.owner.email] if ride.owner else []
-  # if ride.ride_group and ride.ride_group.companions:
-  #   for sharer in ride.ride_group.companions.all():
-  #     email_list.append(sharer.email)
-  # # send_mail(subject=subject, message=msg, from_email=mail_source, recipient_list=email_list)
-  # msg = f"Your have completed the ride: {str(ride)}."
-  # email_list = [cur_user.email]
-  # # send_mail(subject=subject, message=msg, from_email=mail_source, recipient_list=email_list)
   service = gmail_authenticate()
   subject = "[Ride Service]Order Accomplished"
   mail_source = settings.EMAIL_HOST_USER
@@ -434,12 +400,4 @@ def view_ride_detail(request, id, ride_id):
   records = ShareGroupNumberRecord.objects.filter(order = ride)
   return render(request, "base/view_ride_detail.html", {'ride':ride, 'user':cur_user, 'ride_group':ride_group, 'records':records})
   
-  
-# def oauth2callback(request):
-#     # 这里你将处理重定向，例如使用请求中的授权码来获取访问令牌
-#     return HttpResponse('OAuth2 callback processed.')
-  # return redirect('base:view_my_ride', id = id)
-# def IndexView(generic.ListView):
-#   template_name = "base/index.html"
-#   context_object_name = "latest_question_list"
   

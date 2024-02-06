@@ -1,11 +1,18 @@
+{%load static%}
 <!DOCTYPE html>
 <html lang="en">
    <head>
        <meta charset="UTF-8">
-       <title>Create Your Order</title>
+       <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/register.css'%}" rel="stylesheet">
+       <title>Request Share Ride</title>
    </head>
    <body>
-    <h1>Please fill in the form to match all available rides</h1>
+    <div class="background">
+      <div class="overlay box">
+    <h1 class="title">Fill to match rides</h1>
     {% if messages %}
     {% for message in messages %}
         <div id="messages" class="alert alert-info">{{ message }}</div>
@@ -15,10 +22,14 @@
        {% csrf_token %}
 
        <table>
+        <div class="form-group">
 	 {{form.as_table}}
+  </div>
 	 </table>
-     <input type="submit" value="Search">
+     <input type="submit" value="Search" class="btn btn-custom">
      </form>
-     <p><a href="{% url 'base:index' cur_user.id %}">Cancel</a></p>
-   </body>
+     <p><a href="{% url 'base:index' cur_user.id %}" class="text-white">Cancel</a></p>
+    </div>
+  </div>
+    </body>
 </html>

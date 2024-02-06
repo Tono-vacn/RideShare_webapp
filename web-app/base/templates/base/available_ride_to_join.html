@@ -1,22 +1,28 @@
+{%load static%}
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <style>
-      table, th, td {border: 1px solid black;}
-    </style>
-       <meta charset="UTF-8">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/view.css'%}" rel="stylesheet">
        <title>View All Ride That You Can Join</title>
    </head>
   <body>
-    <h1>These Are Available Rides That You Can Join</h1>
+    <div class="background">
+			<div class="overlay box">
+    <h1 class="text-white">These Are Available Rides That You Can Join</h1>
 		{% if messages %}
 		{% for message in messages %}
 				<div id="messages" class="alert alert-info">{{ message }}</div>
 		{% endfor %}
 		{% endif %}
+
      {% for ride in all_rec %}
+     <div class="form-group">
      {% if ride.arrival_time <= latest and ride.arrival_time >= earliest and ride.owner != user and user not in ride.ride_group.companions.all%}
-     <table style="width:100%">
+     <table style="width:100%" class="table table-custom">
        <tr>
 	 <th>Owner Name</th>
 	 <th>Email</th>
@@ -52,24 +58,20 @@
        </tr>
      </table>
 
-      <button type="button">
         <a 
-        href="{% url 'base:join_ride' id=user.id ride_id=ride.id share_passenger_num=passenger_num%}"
+        href="{% url 'base:join_ride' id=user.id ride_id=ride.id share_passenger_num=passenger_num%}" class = "text-white"
         >Join This Ride</a>
-      </button>
 
      {%endif%}
+      </div>
      {% endfor %}
 
         
    
-        <button type="button">
-              <a href="{% url 'base:request_join_ride' user.id %}">Edit my Filter</a>
-        </button>
+              <a href="{% url 'base:request_join_ride' user.id %}" class = "text-white">Edit my Filter</a>
 
-        <button type="button">
-              <a href="{% url 'base:index' user.id %}">Return to Index</a>
-        </button>
- 
+              <a href="{% url 'base:index' user.id %}" class = "text-white">Return to Index</a>
+    </div>
+    </div>
    </body>
 </html>

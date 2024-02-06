@@ -1,11 +1,17 @@
+{%load static%}
 <!DOCTYPE html>
 <html lang="en">
     <head>
         <meta charset="UTF-8">
-        <title>Riding share service</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/register.css'%}" rel="stylesheet">
+        <title>Ride App</title>
     </head>
     <body>
-
+        <div class="background">
+            <div class="overlay box">
         
         {% if messages %}
         {% for message in messages %}
@@ -13,23 +19,24 @@
         {% endfor %}
         {% endif %}
 
-        <h2>Welcome to service,{{cur_user.username}}</h2>
+        <h2 class="title">Welcome to service,{{cur_user.username}}</h2>
 
 
         {% comment %} <button type="button"><a {% comment %} href="{% url 'edituserinfo' driver.user.id %}">Edit your User Information</a></button> {% endcomment %}
-        {%if cur_user.user_cata == "Passenger"%}
-        <button type="button">
+        {% comment %} {%if cur_user.user_cata == "Passenger"%}
+        <p>
             <a 
             href="{% url 'base:edit_profile' cur_user.id%}"
-            >Edit your User Information</a>
-        </button>
+            class="text-white">Edit User Info</a>
+        </p>
 
         {%endif%}
 
-        <button type="button">
-            <a href="{% url 'base:request_join_ride' cur_user.id %}">Join an Existing Ride !</a>
-        </button>
+        <p>
+            <a href="{% url 'base:request_join_ride' cur_user.id %}" class="text-white">Join an Existing Ride !</a>
+        </p> {% endcomment %}
 
+        <div class="form-group">
         <ul>
             {% comment %} <li>First Name:{{driver.user.first_name}} </li>
             <li>Last Name: {{driver.user.last_name}} </li> {% endcomment %}
@@ -39,101 +46,132 @@
             {% comment %} <li>User ID: {{driver.user.id}}</li> {% endcomment %}
 
         </ul>
-        {%if cur_user.user_cata == "Passenger"%}
-        <h3>Driver Information: You are not a driver</h3>
+        </div>
 
-        <button type="button">
+        {%if cur_user.user_cata == "Passenger"%}
+        <h3 class="text-white">Driver Information: You are not a driver</h3>
+
+        {% comment %} {%if cur_user.user_cata == "Passenger"%} {% endcomment %}
+        <p>
+            <a 
+            href="{% url 'base:edit_profile' cur_user.id%}"
+            class="text-white">Edit User Info</a>
+        </p>
+
+        {% comment %} {%endif%} {% endcomment %}
+
+        <p>
+            <a href="{% url 'base:request_join_ride' cur_user.id %}" class="text-white">Join Ride</a>
+        </p>
+
+        <p>
             <a 
             href="{% url  'base:register_as_driver' cur_user.id %}"
-            >Register as driver</a>
-        </button>
+            class="text-white">Register as driver</a>
+        </p>
 
-        <button type="button">
-            <a href="{% url 'base:logout' %}">Click here to logout!</a>
-        </button>
 
-	<button type="button">
+
+        <p>
             <a 
             href="{% url 'base:request_ride' cur_user.id%}"
-            >Click here to Request Open Ride!</a>
-        </button>
+            class="text-white">Request Ride</a>
+        </p>
 
 
-	<button type="button">
+        <p>
             <a 
             href="{% url 'base:view_my_ride' cur_user.id%}"
-            >View My Owned Ride</a>
-        </button>
+            class="text-white">View My Owned Ride</a>
+        </p>
 
 	
-	<button type="button">
+        <p>
             <a 
             href="{% url 'base:view_joined_ride' cur_user.id%}"
-            >View My Joined Ride</a>
-        </button>
+            class="text-white">View My Joined Ride</a>
+        </p>
         {%endif%}
 
 
         {%if cur_user.user_cata == "Driver"%}
         
-        <h3>Driver Information: You are a driver</h3>
+        <h3 class="text-white">Driver Information: You are a driver</h3>
 
-        <button type="button">
-            <a 
-            href="{% url 'base:edit_profile' cur_user.id%}"
-            >Edit your Driver Information</a>
-        </button>
 
-	<button type="button">
-            <a 
-            href="{% url 'base:view_open_ride' cur_user.id %}"
-            >Take An Order as Driver !</a>
-	</button>
+
+
+
 		
+    <div class="form-group">
         <ul>
             <li>vehicle type: {{cur_user.vehicle_type}}</li>
             <li>license_plate_number: {{cur_user.license_num}}</li>
             <li>max_number_passengers: {{cur_user.max_passenger}}</li>
             {% comment %} <li>special_request: {{cur_user.special_request}}</li> {% endcomment %}
         </ul>
-       
-        <button type="button">
-            <a href="{% url 'base:logout' %}">Click here to logout!</a>
-        </button>
+    </div>
 
-	<button type="button">
+    <p>
+        <a 
+        href="{% url 'base:edit_profile' cur_user.id%}"
+        class="text-white">Edit Driver Info</a>
+
+    </p>
+    <p>
+        <a href="{% url 'base:request_join_ride' cur_user.id %}" class="text-white">Join Ride</a>
+    </p>
+
+    <p>
+        <a 
+        href="{% url 'base:view_open_ride' cur_user.id %}"
+        class="text-white">Take Driver Order</a>
+    </p>
+
+{% comment %} 
+	<p>
+            <a href="{% url 'base:logout' %}" class="text-white">Click here to logout!</a>
+    </p> {% endcomment %}
+
+        <p>
             <a 
             href="{% url 'base:request_ride' cur_user.id%}"
-            >Click here to Request Open Ride!</a>
-        </button>
+            class="text-white">Request Ride</a>
+        </p>
 
 	
-	<button type="button">
+	<p>
             <a 
             href="{% url 'base:view_my_ride' cur_user.id%}"
-            >View My Owned Ride</a>
-        </button>
+            class="text-white">View Owned Ride</a>
+    </p>
 
 	
-	<button type="button">
+	<p>
             <a 
             href="{% url 'base:view_joined_ride' cur_user.id %}"
-            >View My Joined Ride</a>
-        </button>
+            class="text-white">View Joined Ride</a>
+    </p>
 
 	
-	<button type="button">
+	<p>
             <a 
             href="{% url 'base:view_taken_ride' cur_user.id %}"
-            >View My Drive Ride</a>
-        </button>
+            class="text-white">View Drive Ride</a>
+    </p>
 
 
-    <button type="button">
+    <p>
             <a 
             href="{% url 'base:view_completed_ride' cur_user.id %}"
-            >View My Completed Ride</a>
-        </button>
+            class="text-white">View Completed Ride</a>
+    </p>
 	{%endif%}
+
+    <p>
+        <a href="{% url 'base:logout' %}" class="text-white">Click here to logout!</a>
+    </p>
+</div>
+</div>
     </body>
 </html>

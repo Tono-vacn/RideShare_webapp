@@ -1,21 +1,27 @@
+{%load static%}
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <style>
-      table, th, td {border: 1px solid black;}
-    </style>
-       <meta charset="UTF-8">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/view.css'%}" rel="stylesheet">
        <title>View All Your {{view_status}} Ride</title>
    </head>
   <body>
-    <h1>These Are {{ride_status}} Rides That You {{view_status}}</h1>
+		<div class="background">
+			<div class="overlay box">
+    <h1 class="text-white">These Are {{ride_status}} Rides That You {{view_status}}</h1>
 		{% if messages %}
 		{% for message in messages %}
 				<div id="messages" class="alert alert-info">{{ message }}</div>
 		{% endfor %}
 		{% endif %}
+
      {% for ride in all_rec %}
-     <table style="width:100%">
+		 <div class="form-group">
+     <table style="width:100%" class="table table-custom">
        <tr>
 	 <th>Owner Name</th>
 	 <th>Email</th>
@@ -51,44 +57,48 @@
        </tr>
      </table>
      {% if ride.ride_status == 'OPEN' and view_status == 'owned'%}
-     <button><a href="{% url 'base:cancel_ride' id=user.id ride_id=ride.id %}">Cancel<a></button>
+     <a href="{% url 'base:cancel_ride' id=user.id ride_id=ride.id %}"  class="text-white">Cancel<a>
      
-     <button><a 
-      href="{% url 'base:edit_my_ride' id=user.id ride_id=ride.id %}">Edit<a></button>
+     <a 
+      href="{% url 'base:edit_my_ride' id=user.id ride_id=ride.id %}"  class="text-white">Edit<a>
      {% endif %}
 
 		 {% if ride.ride_status == 'OPEN' and view_status == 'joined'%}
-     <button><a href="{% url 'base:quit_ride' id=user.id ride_id=ride.id%}">Quit<a></button>
+     <a href="{% url 'base:quit_ride' id=user.id ride_id=ride.id%}"  class="text-white">Quit<a>
      {% endif %}
 
 		 {% if view_status == 'confirmed'%}
-		 <button><a 
-			href="{% url 'base:complete_ride' id=user.id ride_id=ride.id %}"
-			>Complete<a></button>
+		 <a 
+			href="{% url 'base:complete_ride' id=user.id ride_id=ride.id %}"  class="text-white"
+			>Complete<a>
 		 {% endif %}
 
-		 <button><a 
-			href="{% url 'base:view_ride_detail' id=user.id ride_id=ride.id %}"
-			>Details<a></button>
-
+		 <a 
+			href="{% url 'base:view_ride_detail' id=user.id ride_id=ride.id %}"  class="text-white"
+			>Details<a>
+			</div>
 	 {% endfor %}
-     
-       <button type="button">
-           <a href="{% url 'base:index' user.id %}">Return to Index</a>
-       </button>
+
+
+
 {% if view_status != "confirmed" and view_status != "completed" %}
        <form method = "post" action="">
 	 {% csrf_token %}
-	 <select name = "all_open_or_confirmed">
+	 <select name = "filter_status">
 	   <option value="ALL" {% if ride_status == "ALL" %}selected{% endif %}>All</option>
 	   <option value="CONFIRMED" {% if ride_status == "CONFIRMED" %}selected{% endif %}>Confirmed</option>
 	   <option value="OPEN" {% if ride_status == "OPEN" %}selected{% endif %}>Open</option>
      <option value="CANCELLED" {% if ride_status == "CANCELLED" %}selected{% endif %}>Cancelled</option>
      <option value="COMPLETED" {% if ride_status == "COMPLETED" %}selected{% endif %}>Completed</option>
 	 </select>
-	 <input type = "submit" value="Update View">
+	 <input type = "submit" value="Update View" class="btn btn-custom">
 	 </form>
 {% endif %}
+
+
+<a href="{% url 'base:index' user.id %}" class="text-white">Return to Index</a>
  
+</div>
+</div>
    </body>
 </html>
