@@ -5,15 +5,26 @@
         <title>Riding share service</title>
     </head>
     <body>
-        <h2>Welcome to service,{{cur_user.username}}</h2>
 
+        
         {% if messages %}
         {% for message in messages %}
             <div id="messages" class="alert alert-info">{{ message }}</div>
         {% endfor %}
         {% endif %}
 
+        <h2>Welcome to service,{{cur_user.username}}</h2>
+
+
         {% comment %} <button type="button"><a {% comment %} href="{% url 'edituserinfo' driver.user.id %}">Edit your User Information</a></button> {% endcomment %}
+        {%if cur_user.user_cata == "Passenger"%}
+        <button type="button">
+            <a 
+            href="{% url 'base:edit_profile' cur_user.id%}"
+            >Edit your User Information</a>
+        </button>
+
+        {%endif%}
 
         <button type="button">
             <a href="{% url 'base:request_join_ride' cur_user.id %}">Join an Existing Ride !</a>
@@ -28,6 +39,42 @@
             {% comment %} <li>User ID: {{driver.user.id}}</li> {% endcomment %}
 
         </ul>
+        {%if cur_user.user_cata == "Passenger"%}
+        <h3>Driver Information: You are not a driver</h3>
+
+        <button type="button">
+            <a 
+            href="{% url  'base:register_as_driver' cur_user.id %}"
+            >Register as driver</a>
+        </button>
+
+        <button type="button">
+            <a href="{% url 'base:logout' %}">Click here to logout!</a>
+        </button>
+
+	<button type="button">
+            <a 
+            href="{% url 'base:request_ride' cur_user.id%}"
+            >Click here to Request Open Ride!</a>
+        </button>
+
+
+	<button type="button">
+            <a 
+            href="{% url 'base:view_my_ride' cur_user.id%}"
+            >View My Owned Ride</a>
+        </button>
+
+	
+	<button type="button">
+            <a 
+            href="{% url 'base:view_joined_ride' cur_user.id%}"
+            >View My Joined Ride</a>
+        </button>
+        {%endif%}
+
+
+        {%if cur_user.user_cata == "Driver"%}
         
         <h3>Driver Information: You are a driver</h3>
 
@@ -87,6 +134,6 @@
             href="{% url 'base:view_completed_ride' cur_user.id %}"
             >View My Completed Ride</a>
         </button>
-	
+	{%endif%}
     </body>
 </html>

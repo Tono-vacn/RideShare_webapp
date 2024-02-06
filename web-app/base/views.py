@@ -78,33 +78,27 @@ def init_page(request):
 
 def login(request):
   if request.user.is_authenticated:
-    # return HttpResponseRedirect(reverse("base:index"))
     return redirect("base:index", id = request.user.id)
-  else:
-    if request.method == "POST":
-      username = request.POST.get("username")
-      password = request.POST.get("password")
-      user = auth.authenticate(username = username, password = password) 
-      if user is not None and user.is_active:
-        auth.login(request, user)
-        return redirect("base:index", id = user.pk)
-      else:
-        messages.info(request, "username or password not correct")
-        # return HttpResponseRedirect(reverse("base:login"))
+  if request.method == "POST":
+    username = request.POST.get("username")
+    password = request.POST.get("password")
+    user = auth.authenticate(username = username, password = password) 
+    if user is not None and user.is_active:
+      auth.login(request, user)
+      return redirect("base:index", id = user.pk)
+    else:
+      messages.info(request, "username or password not correct")
   return render(request, "base/login.html", locals())  
 
 def logout(request):
   auth.logout(request)
   return redirect("base:login")
-  # return HttpResponseRedirect(reverse("base:login"))   
   
 def register(request, flag):
     if request.method == 'POST':
         form = CreatePassengerForm(request.POST) if flag == "Passenger" else CreateDriverForm(request.POST)
         if form.is_valid():
             user = form.save(commit=False)
-            
-            # my_user.save()
             user.user_cata = "Passenger" if flag == "Passenger" else "Driver"
             user.save()
             return redirect('base:login')
@@ -118,10 +112,11 @@ def register(request, flag):
 @never_cache   
 def index(request, id):
   cur_user = CustomUser.objects.get(id = id)
-  if cur_user.user_cata == "Passenger":
-    return render(request, "base/index_passenger.html", {"cur_user": cur_user})
-  else: #cur_user.user_cata == "Driver":
-    return render(request, "base/index_driver.html", {"cur_user": cur_user})
+  return render(request, "base/index.html", {"cur_user": cur_user})
+  # if cur_user.user_cata == "Passenger":
+  #   return render(request, "base/index_passenger.html", {"cur_user": cur_user})
+  # else: #cur_user.user_cata == "Driver":
+  #   return render(request, "base/index_driver.html", {"cur_user": cur_user})
 
 def edit_profile(request, id):
   # cur_user = request.CustomUser

@@ -14,7 +14,8 @@ class LoginRedirectMiddleware:
                 return redirect('base:index', id = request.user.id)
         else:
             # 用户未登录，不在登录页面时重定向到登录页面
-            if request.path != reverse('base:login'):
+            allowed_paths = [reverse('base:login'), reverse('base:register', args = ['Driver']), reverse('base:register', args = ['Passenger'])]
+            if request.path not in allowed_paths:
                 return redirect('base:login')
 
         response = self.get_response(request)
