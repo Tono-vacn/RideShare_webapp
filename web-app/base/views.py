@@ -335,15 +335,10 @@ def confirm_ride(request, id, ride_id):
     if ride.ride_group and ride.ride_group.companions:
       for sharer in ride.ride_group.companions.all():
         send_message(service, "tonyjyc58@gmail.com", sharer.email, subject, msg)
-        # email_list.append(sharer.email)
-    # send_mail(subject=subject, message=msg, from_email=mail_source, recipient_list=email_list)
+        
     msg = f"<h1>Your have taken the ride: {str(ride)}.</h1>"
-    # email_list = [cur_user.email]
-    
-    
     
     send_message(service, "tonyjyc58@gmail.com", cur_user.email, subject, msg)
-    # send_mail(subject=subject, message=msg, from_email=mail_source, recipient_list=email_list)
     messages.info(request, "ride confirmed")
     return redirect('base:view_open_ride', id = id)
         
@@ -369,18 +364,12 @@ def complete_ride(request,id,ride_id):
   mail_source = settings.EMAIL_HOST_USER
   msg = f"<h1>Your ride order has been completed by driver: {cur_user.username}.</h1>"
   email_ = ride.owner.email if ride.owner else None
-  # service = gmail_authenticate()
   send_message(service, "tonyjyc58@gmail.com", email_, subject, msg)
   if ride.ride_group and ride.ride_group.companions:
     for sharer in ride.ride_group.companions.all():
       send_message(service, "tonyjyc58@gmail.com", sharer.email, subject, msg)
-      # email_list.append(sharer.email)
-  # send_mail(subject=subject, message=msg, from_email=mail_source, recipient_list=email_list)
   msg = f"<h1>Your have taken the ride: {str(ride)}.</h1>"
-  # email_list = [cur_user.email]
-    
-    
-    
+  
   send_message(service, "tonyjyc58@gmail.com", cur_user.email, subject, msg)
   
   messages.info(request, "ride completed")

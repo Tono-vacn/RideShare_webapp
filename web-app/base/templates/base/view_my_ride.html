@@ -68,18 +68,12 @@
      {% endif %}
 
 		 {% if view_status == 'confirmed'%}
-		 <a 
-			href="{% url 'base:complete_ride' id=user.id ride_id=ride.id %}"  class="text-white"
-			>Complete<a>
+		 <a href="{% url 'base:complete_ride' id=user.id ride_id=ride.id %}"  class="text-white">Complete<a>
 		 {% endif %}
 
-		 <a 
-			href="{% url 'base:view_ride_detail' id=user.id ride_id=ride.id %}"  class="text-white"
-			>Details<a>
+		 <a href="{% url 'base:view_ride_detail' id=user.id ride_id=ride.id %}"  class="text-white">Details<a>
 			</div>
 	 {% endfor %}
-
-
 
 {% if view_status != "confirmed" and view_status != "completed" %}
        <form method = "post" action="">

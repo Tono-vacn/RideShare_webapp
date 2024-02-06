@@ -1,8 +1,3 @@
-# import email
-# from email.policy import default
-# from pyexpat import model
-# from random import choices
-# from unittest.util import _MAX_LENGTH
 import uuid
 from django.db import models
 from django.urls import reverse
@@ -13,23 +8,6 @@ from phonenumber_field.modelfields import PhoneNumberField
 # Create your models here.
 
 class LoginUserManager(BaseUserManager):
-  # def create_new_user(self, email_input, psw, first_name = "NULL", last_name = "NULL", phone_num = "+19841234567", user_cata = "PASSENGER", driver_license = "", plate_num = ""):
-  #   if not email_input:
-  #     raise ValueError("invalid email input")
-  #   new_user = self.model(
-  #     first_name = first_name,
-  #     last_name = last_name,
-  #     phone_num = phone_num,
-  #     email = LoginUserManager.normalize_email(email_input),
-  #     psw = psw,
-  #     user_cata = user_cata,
-  #     license_num = driver_license,
-  #     plate_num = plate_num,
-  #   ) 
-  #   new_user.set_password(psw)
-  #   new_user.save(using = self._db)
-  #   return new_user
-
   def create_new_user(self, email_input, psw, username = "NULL", phone_num = "+19841234567", user_cata = "PASSENGER", driver_license = "", plate_num = "", max_passenger = 0, vehicle_type = "Economy", vehicle_brand = "NULL"):
     if not email_input:
       raise ValueError("invalid email input")
@@ -49,29 +27,11 @@ class LoginUserManager(BaseUserManager):
     new_user.save(using = self._db)
     return new_user
   
-  # def create_superuser(self, email, password, first_name = "NULL", last_name = "NULL", phone_num = "+19841234567", user_cata = "PASSENGER", driver_license = "", plate_num = ""):
-  #   sp_user = self.model(
-  #     email = LoginUserManager.normalize_email(email),
-  #     last_name = last_name,
-  #     first_name = first_name,
-  #     user_cata = user_cata,
-  #     phone_num = phone_num,
-  #   )
-    
-  #   sp_user.is_admin = True
-  #   sp_user.is_staff = True
-  #   sp_user.is_superuser = True
-  #   sp_user.is_active = True
-  #   sp_user.save(using = self._db)
-  #   return sp_user
 
 class CustomUser(AbstractUser):
-  # username = models.CharField(max_length = 64, default = "NULL", help_text = "User Name")
   username = models.CharField(max_length = 64, default = "NULL", help_text = "User Name", unique=True)
   phone_num = PhoneNumberField(default = "+19841234567")
   email = models.CharField(max_length = 64)
-  # user_name = models.CharField(max_length = 20, default = "NULL")
-  # psw = models.CharField(max_length= 64, default = "NULL")
   USER_CATA = (
     ('Passenger','Passenger'),
     ('Driver', 'Driver'),
@@ -149,5 +109,3 @@ class ShareGroupNumberRecord(models.Model):
   sharer = models.ForeignKey(CustomUser, on_delete = models.CASCADE,null = True, blank = True)
   share_num = models.IntegerField(null = True, blank = True)
   
-  
-# class Vehicle(models.Model):

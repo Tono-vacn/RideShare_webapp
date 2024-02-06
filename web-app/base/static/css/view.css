@@ -31,7 +31,7 @@
   /* text-align: center; */
 }
 .overlay {
-  background-color: rgba(0, 0, 0, 0.5); /* Black with a bit of transparency */
+  background-color: rgba(0, 0, 0, 0.5); 
   color: white;
   padding: 20px;
   border-radius: 10px;
@@ -50,12 +50,12 @@
 .table-custom {
   border-collapse: collapse;
   width: 100%;
-  border: 1px solid #ddd; /* 更细致的边框 */
+  border: 1px solid #ddd;
 }
 
 .table-custom th, .table-custom td {
   text-align: left;
-  padding: 8px; /* 统一的单元格内边距 */
+  padding: 8px;
 }
 
 .table-custom tr:nth-child(even){background-color: #f2f2f201}
@@ -79,7 +79,7 @@
   text-decoration: none;
   border-radius: 4px;
   border: none;
-  margin: 5px; /* 为按钮添加间距 */
+  margin: 5px;
 }
 
 .btn-link-custom:hover {

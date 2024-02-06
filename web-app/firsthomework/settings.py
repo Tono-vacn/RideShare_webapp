@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-g07$#isf++)_++%js*2ew$)743$br3-+uf#-phmlr(_4%bvv61
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['vcm-37988.vm.duke.edu','vcm-38068.vm.duke.edu', '127.0.0.1','localhost']
+ALLOWED_HOSTS = ['web', 'vcm-37988.vm.duke.edu','vcm-38068.vm.duke.edu', '127.0.0.1','localhost']
 
 
 # Application definition
@@ -76,21 +76,23 @@ WSGI_APPLICATION = 'firsthomework.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-DATABASES = {
+DATABASES = { 
     # 'default': {
-    #     'ENGINE': 'django.db.backends.sqlite3',
-    #     'NAME': BASE_DIR / 'db.sqlite3',
+    #     'ENGINE': 'django.db.backends.postgresql',
+    #     'NAME': 'baseDB',
+    #     'USER': 'vcm',
+    #     'PASSWORD': '0000',
+    #     'HOST': '127.0.0.1',
+    #     'PORT': '5432',
     # }
-    
+
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'baseDB',
-        'USER': 'vcm',
-        'PASSWORD': '0000',
-        'HOST': '127.0.0.1',
-        'PORT': '5432',
+        'NAME': 'postgres',
+        'USER': 'postgres',
+        'HOST': 'db',
+        'PORT': 5432,
     }
-    
 }
 
 

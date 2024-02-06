@@ -11,7 +11,7 @@
   text-align: center;
 }
 .overlay {
-  background-color: rgba(0, 0, 0, 0.5); /* Black with a bit of transparency */
+  background-color: rgba(0, 0, 0, 0.5);
   color: white;
   padding: 20px;
   border-radius: 10px;
@@ -32,7 +32,7 @@
   background-color: #f8f9fa;
 }
 #messages {
-    color: red; /* 或根据您的设计进行更改 */
+    color: red; 
 }
 .form-group {
     margin-bottom: 15px;
@@ -43,7 +43,7 @@
 }
 .loading-text{
   margin-top: 20px;
-  color: white; /* 或者您喜欢的颜色 */
+  color: white;
   font-size: 1.2em;
   animation: fadeInOut 2s linear infinite;
 }
@@ -61,6 +61,5 @@
   filter:alpha(opacity=30);
   -moz-opacity:0.7;
   opacity:0.7;
-  /*padding-left: 12%;*/
   padding-top: 5%;
 }

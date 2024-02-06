@@ -31,7 +31,7 @@
   /* text-align: center; */
 }
 .overlay {
-  background-color: rgba(0, 0, 0, 0.5); /* Black with a bit of transparency */
+  background-color: rgba(0, 0, 0, 0.5);
   color: white;
   padding: 20px;
   border-radius: 10px;
