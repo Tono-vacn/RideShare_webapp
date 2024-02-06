@@ -11,6 +11,7 @@ from django.views import generic
 from django.contrib import auth,messages
 from django.contrib.auth.models import User
 from django.core.mail import send_mail
+from django.views.decorators.cache import never_cache
 
 from firsthomework import settings
 # Create your views here.
@@ -113,7 +114,8 @@ def register(request, flag):
         form = CreatePassengerForm() if flag == "Passenger" else CreateDriverForm()
 
     return render(request,'base/register.html',{'form':form})
-   
+
+@never_cache   
 def index(request, id):
   cur_user = CustomUser.objects.get(id = id)
   if cur_user.user_cata == "Passenger":
