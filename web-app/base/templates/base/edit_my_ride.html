@@ -19,6 +19,8 @@
     {% endfor %}
     {% endif %}
 
+    {%if ride.owner_passenger_num == ride.ride_group.total_group_num%}
+
      <form actio = "" method = "post">
        {% csrf_token %}
 
@@ -29,7 +31,18 @@
 	 </table>
      <input type="submit" value="Save" class="btn btn-custom">
      </form>
+     {%else%}
+
+     <p>
+      This ride is shared by other user. Unable to edit.
+     </p>
+
+     {%endif%}
+
+
      <p><a href="{% url 'base:index' user.id %}" class="text-white">Cancel</a></p>
+
+
     </div>
   </div>
   </body>

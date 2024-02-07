@@ -21,7 +21,7 @@
 
      {% for ride in all_rec %}
      <div class="form-group">
-     {% if ride.arrival_time <= latest and ride.arrival_time >= earliest and ride.owner != user and user not in ride.ride_group.companions.all%}
+     {% if ride.arrival_time <= latest and ride.arrival_time >= earliest and ride.owner != user and ride.ride_status == "OPEN" and user not in ride.ride_group.companions.all%}
      <table style="width:100%" class="table table-custom">
        <tr>
 	 <th>Owner Name</th>

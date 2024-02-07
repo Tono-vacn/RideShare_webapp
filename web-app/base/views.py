@@ -34,13 +34,15 @@ def gmail_authenticate():
     creds = None
     # token.json stored user access and refresh tokens
     credentials_path = os.path.join(settings.BASE_DIR, 'credentials.json')
-    
+    # print("teststartteststart")
     if os.path.exists('token.json'):
         creds = Credentials.from_authorized_user_file('token.json', SCOPES)
+        # print("testheretesthere")
     # Authentication if no valid credentials are available
     if not creds or not creds.valid:
         if creds and creds.expired and creds.refresh_token:
             creds.refresh(Request())
+            # print("test3test")
         else:
             # This credentials.json is the credential you download from Google API portal when you 
             # created the OAuth 2.0 Client IDs
@@ -48,9 +50,9 @@ def gmail_authenticate():
                 credentials_path, SCOPES)
             # this is the redirect URI which should match your API setting, you can 
             # find this setting in Credentials/Authorized redirect URIs at the API setting portal
-            print("Starting local server...")
+            # print("Starting local server...")
             creds = flow.run_local_server(host='localhost', port=8080)
-            print("Local server started.")
+            # print("Local server started.")
         # Save vouchers for later use
         with open('token.json', 'w') as token:
             token.write(creds.to_json())
@@ -223,7 +225,7 @@ def edit_my_ride(request, id, ride_id):
       messages.info(request, "invalid form")
   else:
     form = RideRequestForm(instance = ride)
-  return render(request, "base/edit_my_ride.html", {'form':form, 'user':cur_user})
+  return render(request, "base/edit_my_ride.html", {'form':form, 'user':cur_user, 'ride':ride})
 
 def cancel_ride(request,id,ride_id):
   cancelled_ride = Ride.objects.get(id=ride_id)
